@@ -1,0 +1,87 @@
+{
+  "name": "@genx/server",
+  "version": "1.0.0",
+  "main": "lib/index",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Gen-X web application framework based on koa for node.js",
+  "scripts": {
+    "doc": "jsdoc -c jsdoc.json -t ./node_modules/ink-docstrap/template -R README.md -d './docs' -r --verbose ./src",
+    "test:all": "npm run test:spec && npm run test:mocha",
+    "test:spec": "mocha --recursive src/**/*.spec.js --timeout 5000",
+    "test:mocha": "mocha test/*.mocha.js --timeout 5000",
+    "test": "npm run build:test && npm run test:all",
+    "cover": "npm run build:test && npm run cover:unit && npm run cover:integration && npm run cover:report",
+    "cover:unit": "nyc --silent npm run test:spec",
+    "cover:integration": "nyc --silent --no-clean npm run test:mocha",
+    "cover:report": "nyc report --reporter=html --reporter=text",
+    "bulid:clean": "rm -rf lib",
+    "build": "npm run bulid:clean && NODE_ENV=development babel src -d lib --copy-files && del lib/**/__test__",
+    "build:prod": "npm run bulid:clean && NODE_ENV=production babel src -d lib --copy-files && del lib/**/__test__",
+    "build:test": "npm run bulid:clean && NODE_ENV=test babel src -d lib --copy-files && del lib/**/__test__",
+    "build:watch": "NODE_ENV=development babel src -w -d lib --copy-files",
+    "sample": "npm run build && cd test/sample/app_modules/gateway && npm run build && cd ../.. && node index",
+    "sample:sso:oolong": "cd test/sample/app_modules/sso && npm run oolong:build && npm run oolong:migrate",
+    "sample:gateway:oolong": "cd test/sample/app_modules/gateway && npm run oolong:build && npm run oolong:migrate"
+  },
+  "keywords": [
+    "web",
+    "builder",
+    "modular",
+    "framework",
+    "koa"
+  ],
+  "repository": "https://github.com/kitmi/k-suite/tree/master/packages/server",
+  "bugs": {
+    "url": "https://github.com/kitmi/k-suite/issues"
+  },
+  "author": "Rockie Guo <rockie@kitmi.com.au>",
+  "license": "MIT",
+  "nyc": {
+    "exclude": [
+      "babel.config.js",
+      "test",
+      "src"
+    ]
+  },
+  "peerDependencies": {
+    "@genx/app": "^1.0.0",
+    "rk-utils": "^2.2.4"
+  },
+  "devDependencies": {
+    "@genx/app": "^1.0.0",
+    "luxon": "^1.4.3",
+    "mysql2": "^1.6.4",
+    "shelljs": "^0.8.2",
+    "socket.io": "^2.2.0"
+  },
+  "dependencies": {
+    "@koa/cors": "^2.2.3",
+    "fs-extra": "^7.0.0",
+    "http-status-codes": "^1.3.0",
+    "hyperid": "^1.4.1",
+    "koa": "^2.8.1",
+    "koa-body": "^4.0.6",
+    "koa-bodyparser": "^4.2.1",
+    "koa-compress": "^2.0.0",
+    "koa-connect": "^2.0.1",
+    "koa-csrf": "^3.0.7",
+    "koa-error": "^3.2.0",
+    "koa-etag": "^3.0.0",
+    "koa-flash-message": "^0.1.6",
+    "koa-methodoverride": "^2.0.0",
+    "koa-mount": "^3.0.0",
+    "koa-passport": "^4.0.1",
+    "koa-router": "^7.4.0",
+    "koa-session": "^5.10.1",
+    "koa-session-memory": "^1.0.2",
+    "koa-static": "^4.0.2",
+    "koa-views": "^6.1.3",
+    "swig-templates": "^2.0.3",
+    "validator": "^9.4.1"
+  },
+  "engines": {
+    "node": "8.11.4"
+  }
+}

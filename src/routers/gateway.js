@@ -1,7 +1,7 @@
 "use strict";
 
 const { _, fs, urlJoin, getValueByPath } = require('rk-utils');
-const Router = require('koa-router');
+const Router = require('@koa/router');
 const HttpCode = require('http-status-codes');
 const { InvalidConfiguration, BadRequest, MethodNotAllowed } = require('../utils/Errors');
 const validator = require('validator');

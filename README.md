@@ -1,6 +1,8 @@
 # @genx/server
 
-A full-stack (aimed to be full-stack) web/mobile application framework based on koa2. (ES7 required)
+A full-stack (aimed to be full-stack) web/mobile application framework based on koa2. (ES7 required) [https://github.com/genx-tech/gx-server](https://github.com/genx-tech/gx-server)
+
+![GitHub last commit](https://img.shields.io/github/last-commit/genx-tech/gx-server)
 
 ## 1. Concepts
 

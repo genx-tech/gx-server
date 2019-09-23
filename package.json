@@ -49,7 +49,7 @@
     "@genx/app": "^1.0.0"
   },
   "devDependencies": {
-    "@genx/app": "^1.0.0",
+    "@genx/app": "1.0.0",
     "luxon": "^1.4.3",
     "mysql2": "^1.6.4",
     "shelljs": "^0.8.2",
@@ -82,5 +82,6 @@
   },
   "engines": {
     "node": "8.11.4"
-  }
+  },
+  "gitHead": "fa2e20a52c6b32955038685358fe5e45a4119734"
 }

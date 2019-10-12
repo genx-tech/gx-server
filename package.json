@@ -23,6 +23,7 @@
     "build:watch": "NODE_ENV=development babel src -w -d lib --copy-files"
   },
   "keywords": [
+    "genx-suite",
     "web",
     "builder",
     "modular",

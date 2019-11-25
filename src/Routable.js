@@ -2,7 +2,7 @@
 
 const path = require('path');
 const { _, fs, glob, urlJoin, ensureLeftSlash, urlAppendQuery } = require('rk-utils');
-const { tryRequire } = require('@genx/app/lib/utils/Helpers');
+const { Helpers: { tryRequire } } = require('@genx/app');
 const Errors = require('./utils/Errors');
 const Literal = require('./enum/Literal');
 const Koa = require('koa');

@@ -28,6 +28,11 @@ module.exports = Object.assign({}, Literal, {
     BACKEND_PATH: 'server',   
 
     /**
+     * Backend source files path
+     */
+    BACKEND_SRC_PATH: 'src',   
+
+    /**
      * Frontend source files path, e.g. react source
      */
     CLIENT_SRC_PATH: 'client',

@@ -81,8 +81,5 @@
     "swig-templates": "^2.0.3",
     "validator": "^9.4.1"
   },
-  "engines": {
-    "node": "8.11.4"
-  },
   "gitHead": "fa2e20a52c6b32955038685358fe5e45a4119734"
 }

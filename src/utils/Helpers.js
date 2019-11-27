@@ -8,7 +8,7 @@ exports.requireFeatures = function (features, app, middleware) {
 
     if (hasNotEnabled) {
         throw new InvalidConfiguration(
-            `"${middleware}" requires "${hasNotEnabled}" feature to be enabled.`,
+            `Middleware "${middleware}" requires "${hasNotEnabled}" feature to be enabled.`,
             app,
             `middlewares.${middleware}`
         );

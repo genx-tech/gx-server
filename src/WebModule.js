@@ -50,8 +50,8 @@ class WebModule extends Routable(ServiceContainer) {
      * @param name
      * @returns {object}
      */
-    getService(name) {
-        return super.getService(name) || this.server.getService(name);
+    getService(name, currentModuleOnly) {
+        return super.getService(name) || (!currentModuleOnly && this.server.getService(name));
     }    
 
     /**
@@ -79,6 +79,10 @@ class WebModule extends Routable(ServiceContainer) {
     }
 
     _uninitialize() {
+    }
+
+    _getConfigVariables() {
+        return { ...super._getConfigVariables(), custom: this.customConfig };
     }
 }
 

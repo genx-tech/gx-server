@@ -11,10 +11,10 @@ const { _, eachAsync_ } = require('rk-utils');
 module.exports = {
 
     /**
-     * This feature is loaded at final stage.
+     * This feature is loaded at ready (final) stage.
      * @member {string}
      */
-    type: Feature.FINAL,
+    type: Feature.READY,
 
     /**
      * Load the feature.
@@ -39,6 +39,9 @@ module.exports = {
             if (pos !== -1) {
                 mainRoute = route.substring(0, pos + 2);
                 baseRoute = route.substring(pos + 1);
+            } else if (Array.isArray(routersConfig)) {
+                //all handled by middleware chains
+                mainRoute = 'all:/';
             }
 
             let rules = {

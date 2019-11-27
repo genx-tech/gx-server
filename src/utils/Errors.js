@@ -6,7 +6,7 @@
  */
 
 const { withStatus } = require('./Helpers');
-const { Errors: { RequestError, ApplicationError } } = require('@genx/app');
+const { Errors: { RequestError, ApplicationError, InvalidConfiguration } } = require('@genx/app');
 const HttpCode = require('http-status-codes');
 
 /**
@@ -33,6 +33,7 @@ const MethodNotAllowed = withStatus(RequestError, HttpCode.METHOD_NOT_ALLOWED);
  */
 const ServiceUnavailable = withStatus(ApplicationError, HttpCode.SERVICE_UNAVAILABLE);
 
+exports.InvalidConfiguration = InvalidConfiguration;
 exports.BadRequest = RequestError;
 exports.NotFound = NotFound;
 exports.MethodNotAllowed = MethodNotAllowed;

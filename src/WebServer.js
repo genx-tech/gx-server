@@ -69,6 +69,7 @@ class WebServer extends Routable(Runable(ServiceContainer)) {
         if (this.started && this.appModules) {
             await eachAsync_(this.appModules, app => app.stop_());
             delete this.appModules;
+            delete this.appModulesByAlias;
         }        
 
         if (this.httpServer) {
@@ -88,20 +89,60 @@ class WebServer extends Routable(Runable(ServiceContainer)) {
 
     /**
      * Mount an app at specified route.
-     * @param {string} mountedRoute 
      * @param {WebModule} app 
      */
-    mountApp(mountedRoute, app) {
+    mountApp(app) {
         if (!this.appModules) {
             this.appModules = {};
+            this.appModulesByAlias = {};
         }
 
-        assert: !this.appModules.hasOwnProperty(mountedRoute);
+        assert: !this.appModules.hasOwnProperty(app.route);
 
-        this.router.use(mount(mountedRoute, app.router));
-        this.appModules[mountedRoute] = app;
+        this.router.use(mount(app.route, app.router));
+        this.appModules[app.route] = app;
 
-        this.log('verbose', `All routes from app [${app.name}] are mounted under "${mountedRoute}".`);
+        if (app.name in this.appModulesByAlias) {
+            let existingApp = this.appModulesByAlias[app.name];
+            //move bucket
+            this.appModulesByAlias[`${existingApp.name}[@${existingApp.route}]`] = existingApp;
+            delete this.appModulesByAlias[app.name];
+
+            this.appModulesByAlias[`${app.name}[@${app.route}]`] = app;
+        } else {
+            this.appModulesByAlias[app.name] = app;
+        }
+
+        this.log('verbose', `All routes from app [${app.name}] are mounted under "${app.route}".`);
+    }
+
+    /**
+     * Get the app module object by base route
+     * @param {*} p - App module base route started with "/"
+     */
+    getAppByRoute(p) {
+        return this.appModules[p];
+    }
+
+    /**
+     * Get the app module object by app alias, usually the app name if no duplicate entry
+     * @param {*} a - App module alias
+     */
+    getAppByAlias(a) {
+        return this.appModulesByAlias[a];
+    }
+
+    getService(name) {
+        let pos = name.indexOf(':');
+        if (pos === -1) {
+            return super.getService(name);
+        }
+
+        let modAlias = name.substr(0, pos);
+        name = name.substr(pos+1);
+
+        let app = this.getAppByAlias(modAlias);
+        return app && app.getService(name, true);
     }
 
     _getFeatureFallbackPath() {

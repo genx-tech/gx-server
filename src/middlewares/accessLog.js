@@ -17,7 +17,7 @@ module.exports = (opt, app) => {
         throw new InvalidConfiguration('Missing logger id.', app, 'middlewares.accessLog.logger');
     }
 
-    let logger = app.getService('logger:' + opt.logger);
+    let logger = app.getService('logger.' + opt.logger);
     if (!logger) {
         throw new InvalidConfiguration('Logger not found. Id: ' + opt.logger, app, 'middlewares.accessLog.logger');
     }

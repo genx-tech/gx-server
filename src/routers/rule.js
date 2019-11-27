@@ -82,7 +82,7 @@ function load_(app, baseRoute, options) {
         }
 
         _.forOwn(methods, (middlewares, method) => {
-            if (!Literal.ALLOWED_HTTP_METHODS.has(method)) {
+            if (!Literal.ALLOWED_HTTP_METHODS.has(method) && method !== 'all') {
                 throw new InvalidConfiguration(
                     'Unsupported http method: ' + method,
                     app,

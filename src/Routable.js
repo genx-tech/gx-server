@@ -1,7 +1,7 @@
 "use strict";
 
 const path = require('path');
-const { _, fs, glob, urlJoin, ensureLeftSlash, urlAppendQuery } = require('rk-utils');
+const { _, fs, glob, urlJoin, ensureLeftSlash, ensureRightSlash, urlAppendQuery } = require('rk-utils');
 const { Helpers: { tryRequire } } = require('@genx/app');
 const Errors = require('./utils/Errors');
 const Literal = require('./enum/Literal');
@@ -89,7 +89,7 @@ const Routable = T => class extends T {
      * @param {function} factoryMethod - The factory method of a middleware
      */
     registerMiddlewareFactory(name, factoryMethod) {
-        pre: typeof factoryMethod === 'function', 'Invalid middleware factory: ' + name;
+        pre: typeof factoryMethod === 'function', 'Invalid middleware factory: ' + name;        
 
         if (name in this.middlewareFactoryRegistry) {
             throw new Errors.ServerError('Middleware "'+ name +'" already registered!');
@@ -298,6 +298,7 @@ const Routable = T => class extends T {
             Object.assign(ctx.state, {
                 _self: ctx.originalUrl || this.toWebPath(ctx.url),
                 __: ctx.__,
+                _base: ensureRightSlash(this.toWebPath()),
                 _makePath: (relativePath, query) => this.toWebPath(relativePath, query),
                 _makeUrl: (relativePath, query) => ctx.toUrl(relativePath, query)            
             });
@@ -318,9 +319,11 @@ const Routable = T => class extends T {
 
     _wrapMiddlewareTracer(middleware, name) {        
         if (this.options.traceMiddlewares) {            
-            return (ctx, next) => {
-                this.log('debug', `Calling "${name || middleware.name}" ...`);                
-                return middleware(ctx, next);
+            return async (ctx, next) => {
+                this.log('debug', `Step in middleware "${name || middleware.name}" ...`);                
+                let ret = await middleware(ctx, next);
+                this.log('debug', `Step out from middleware "${name || middleware.name}".`);                
+                return ret;
             }
         }
 
@@ -328,7 +331,7 @@ const Routable = T => class extends T {
     }
 
     _getFeatureFallbackPath() {
-        return super._getFeatureFallbackPath().concat([ this.toAbsolutePath(Literal.BACKEND_PATH, Literal.FEATURES_PATH) ]);
+        return super._getFeatureFallbackPath().concat([ path.join(this.backendPath, Literal.FEATURES_PATH) ]);
     }
 };
 

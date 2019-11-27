@@ -12,7 +12,9 @@
  *          npmModule: false, // whether is a npm module
  *          options: { // module options 
  *          },
- *          settings: { // can be referenced in config file
+ *          settings: { // can override module defined settings
+ *          },
+ *          middlewares: { // can override middlewares 
  *          }
  *      }
  *  } 
@@ -70,7 +72,22 @@ module.exports = {
         }
     
         let app = new WebModule(server, config.name, baseRoute, appPath, options);
-        app.settings = config.settings || {};
+        if (!Util._.isEmpty(config.custom)) {
+            app.customConfig = config.custom;
+        }
+        
+        app.on('configLoaded', () => {
+            if (!Util._.isEmpty(config.settings)) {
+                app.config.settings = Object.assign({}, app.config.settings, config.settings);
+                server.log('verbose', `App settings of [${app.name}] is overrided.`);
+            }
+
+            if (!Util._.isEmpty(config.middlewares)) {
+                let middlewaresToAppend = app.config.middlewares;
+                app.config.middlewares = Object.assign({}, config.middlewares);
+                Util._.defaults(app.config.middlewares, middlewaresToAppend);
+            }
+        });
 
         let relativePath = path.relative(server.workingPath, appPath);
         server.log('verbose', `Loading app [${app.name}] from "${relativePath}" ...`);
@@ -81,7 +98,7 @@ module.exports = {
 
         //delayed the app routes mounting after all plugins of the server are loaded
         server.on('after:' + Feature.PLUGIN, () => {
-            server.mountApp(baseRoute, app);
+            server.mountApp(app);
         });        
     })
 };

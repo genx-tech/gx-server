@@ -195,7 +195,7 @@ const Routable = T => class extends T {
 
                 if (i === lastIndex) {
                     // last middleware may be an action
-                    if (type === 'string' && action.indexOf('.') > 0) {
+                    if (type === 'string' && action.lastIndexOf('.') > 0) {
                         action = {
                             name: 'action',
                             options: action

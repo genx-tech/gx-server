@@ -25,17 +25,3 @@ exports.hasMethod = function hasMethod(obj, name) {
 
     return hasMethod(proto, name);
 };
-
-/**
- * Adds a status property to the class.
- * @mixin
- * @param {*} Base 
- * @param {*} STATUS 
- */
-exports.withStatus = (Base, STATUS) => class extends Base {
-    /**
-     * Status code.
-     * @member {number}
-     */
-    status = STATUS;
-};

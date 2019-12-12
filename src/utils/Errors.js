@@ -5,36 +5,46 @@
  * @module Errors
  */
 
-const { withStatus } = require('./Helpers');
-const { Errors: { RequestError, ApplicationError, InvalidConfiguration } } = require('@genx/app');
+const { Errors: { GeneralError, ApplicationError, InvalidArgument, InvalidConfiguration }, Helpers: { withProps, withArgFill } } = require('@genx/app');
 const HttpCode = require('http-status-codes');
 
+const ExposableError = withProps(GeneralError, { expose: true });
+
+/**
+ * Request errors.
+ * @class
+ * @extends GeneralError  
+ * @mixes withArgFill
+ */
+const BadRequest = withArgFill(ExposableError, 2, HttpCode.BAD_REQUEST, 'E_BAD_REQ');
+   
 /**
  * Http NotFound, 404.
  * @class 
  * @extends RequestError
- * @mixes withStatus
+ * @mixes withArgFill
  */
-const NotFound = withStatus(RequestError, HttpCode.NOT_FOUND);
+const NotFound = withArgFill(ExposableError, 2, HttpCode.NOT_FOUND, 'E_NOT_FOUND');
 
 /**
  * Http MethodNotAllowed, 405.
  * @class 
  * @extends RequestError
- * @mixes withStatus
+ * @mixes withArgFill
  */
-const MethodNotAllowed = withStatus(RequestError, HttpCode.METHOD_NOT_ALLOWED);
+const MethodNotAllowed = withArgFill(ExposableError, 2, HttpCode.METHOD_NOT_ALLOWED, 'E_METHOD_NOT_ALLOWED');
 
 /**
  * Service unavailable error.
  * @class
  * @extends ApplicationError 
- * @mixes withStatus
+ * @mixes withArgFill
  */
-const ServiceUnavailable = withStatus(ApplicationError, HttpCode.SERVICE_UNAVAILABLE);
+const ServiceUnavailable = withArgFill(GeneralError, 2, HttpCode.SERVICE_UNAVAILABLE, 'E_UNAVAILABLE');
 
+exports.InvalidArgument = InvalidArgument;
 exports.InvalidConfiguration = InvalidConfiguration;
-exports.BadRequest = RequestError;
+exports.BadRequest = BadRequest;
 exports.NotFound = NotFound;
 exports.MethodNotAllowed = MethodNotAllowed;
 exports.ServerError = ApplicationError;

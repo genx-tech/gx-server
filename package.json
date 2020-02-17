@@ -49,15 +49,14 @@
   "peerDependencies": {
     "@genx/app": "*"
   },
-  "devDependencies": {
-    "@genx/app": "genx-tech/gx-app#v-next",
+  "devDependencies": {    
+    "@genx/app": "genx-tech/gx-app#v-next",    
+    "koa-passport": "^4.0.1",
     "luxon": "^1.4.3",
     "mysql2": "^1.6.4",
     "shelljs": "^0.8.2",
     "socket.io": "^2.2.0",
-    "swig-templates": "^2.0.3",
-    "koa-body": "^4.1.0",
-    "koa-passport": "^4.0.1"
+    "swig-templates": "^2.0.3"
   },
   "dependencies": {
     "@koa/cors": "^2.2.3",

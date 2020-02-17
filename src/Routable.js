@@ -150,8 +150,27 @@ const Routable = T => class extends T {
                     middlewareFunctions.push({ name: middlewareEntry , middleware });
                 } else if (type === 'function') {
                     middlewareFunctions.push({ name: middlewareEntry.name || 'unamed middleware', middleware: middlewareEntry});
+                } else if (Array.isArray(middlewareEntry)) {
+                    // [ [ 'namedMiddleware', config ] ]
+                    if (middlewareEntry.length === 0) {
+                        throw new Errors.InvalidConfiguration(
+                            'Empty array found as middleware entry!',
+                            this,
+                            'middlewares'
+                        );
+                    }
+
+                    middlewareFactory = this.getMiddlewareFactory(middlewareEntry[0]);
+                    middleware = middlewareFactory(middlewareEntry.length > 1 ? middlewareEntry[1] : null, this);
+                    middlewareFunctions.push({ name: middlewareEntry[0], middleware });
                 } else {
-                    assert: _.isPlainObject(middlewareEntry) && 'name' in middlewareEntry, 'Invalid middleware entry';
+                    if (!_.isPlainObject(middlewareEntry) || !('name' in middlewareEntry)) {
+                        throw new Errors.InvalidConfiguration(
+                            'Invalid middleware entry!',
+                            this,
+                            'middlewares'
+                        );
+                    }
 
                     middlewareFactory = this.getMiddlewareFactory(middlewareEntry.name);
                     middleware = middlewareFactory(middlewareEntry.options, this);

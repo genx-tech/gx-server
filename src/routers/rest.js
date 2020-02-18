@@ -22,6 +22,8 @@ const { hasMethod } = require('../utils/Helpers');
  * @param {objects} options 
  * @property {string} [options.resourcesPath]
  * @property {object|array} [options.middlewares]
+ * @property {boolean} [options.withKeyValuePairInPath]
+ * @property {string} [options.idRegExp]
  * @example
  *  '<base path>': {
  *      rest: {
@@ -31,11 +33,12 @@ const { hasMethod } = require('../utils/Helpers');
  *  }
  *  
  *  route                          http method    function of ctrl
- *  /:resource                     get            query
- *  /:resource                     post           create
- *  /:resource/:id                 get            detail
- *  /:resource/:id                 put            update
- *  /:resource/:id                 delete         remove 
+ *  /:resource                     get            findMany_ 
+ *  /:resource                     post           create_
+ *  /:resource/:unique-key/:value  get            findOneBy_
+ *  /:resource/:id                 get            findOne_
+ *  /:resource/:id                 put            updateOne_
+ *  /:resource/:id                 delete         deleteOne_
  */
 module.exports = (app, baseRoute, options) => {
     let resourcePath = path.resolve(app.backendPath, options.resourcesPath || Literal.RESOURCES_PATH);
@@ -54,7 +57,7 @@ module.exports = (app, baseRoute, options) => {
     _.each(files, file => {
         let relPath = path.relative(resourcePath, file);          
         let batchUrl = Util.ensureLeftSlash(relPath.substring(0, relPath.length - 3).split(path.sep).map(p => _.kebabCase(p)).join('/'));
-        let singleUrl = batchUrl + '/:id'; 
+        let singleUrl = options.idRegExp ? batchUrl + `/:id(${options.idRegExp})` : batchUrl + '/:id'; 
         
         let controller = require(file);
         let isObj = false;
@@ -64,24 +67,28 @@ module.exports = (app, baseRoute, options) => {
             isObj = true;
         }        
 
-        if (hasMethod(controller, 'query')) {
-            app.addRoute(router, 'get', batchUrl, isObj ? controller.query.bind(controller) : controller.query);
+        if (hasMethod(controller, 'findMany_')) {
+            app.addRoute(router, 'get', batchUrl, isObj ? controller.findMany_.bind(controller) : controller.findMany_);
         }
 
-        if (hasMethod(controller, 'create')) {
-            app.addRoute(router, 'post', batchUrl, isObj ? controller.create.bind(controller) : controller.create);
+        if (hasMethod(controller, 'create_')) {
+            app.addRoute(router, 'post', batchUrl, isObj ? controller.create_.bind(controller) : controller.create_);
         }
 
-        if (hasMethod(controller, 'detail')) {
-            app.addRoute(router, 'get', singleUrl, isObj ? controller.detail.bind(controller) : controller.detail);
+        if (options.withKeyValuePairInPath && hasMethod(controller, 'findOneBy_')) {
+            app.addRoute(router, 'get', batchUrl + '/:key/:value', isObj ? controller.findOneBy_.bind(controller) : controller.findOneBy_);
         }
 
-        if (hasMethod(controller, 'update')) {
-            app.addRoute(router, 'put', singleUrl, isObj ? controller.update.bind(controller) : controller.update);
+        if (hasMethod(controller, 'findOne_')) {
+            app.addRoute(router, 'get', singleUrl, isObj ? controller.findOne_.bind(controller) : controller.findOne_);
         }
 
-        if (hasMethod(controller, 'remove')) {
-            app.addRoute(router, 'del', singleUrl, isObj ? controller.remove.bind(controller) : controller.remove);
+        if (hasMethod(controller, 'updateOne_')) {
+            app.addRoute(router, 'put', singleUrl, isObj ? controller.updateOne_.bind(controller) : controller.updateOne_);
+        }
+
+        if (hasMethod(controller, 'deleteOne_')) {
+            app.addRoute(router, 'del', singleUrl, isObj ? controller.deleteOne_.bind(controller) : controller.deleteOne_);
         }
     });
 

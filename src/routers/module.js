@@ -30,7 +30,7 @@ const { InvalidConfiguration } = require('../utils/Errors');
  *   '<base path>': {    
  *       module: "controller"
  *   }
-  */
+ */
 module.exports = function (app, baseRoute, moduleItem) {
     let controllerPath = path.join(app.backendPath, Literal.CONTROLLERS_PATH);   
 

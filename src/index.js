@@ -1,13 +1,21 @@
 "use strict";
 
+const Enums = {
+    Literal: require('./enum/Literal'),
+    Feature: require('@genx/app/lib/enum/Feature')
+};
+
+const Patterns = require('./patterns');
+
 module.exports = {    
-    WebServer: require('./WebServer'),
-    enum: {
-        Literal: require('./enum/Literal'),
-        Feature: require('@genx/app/lib/enum/Feature')
-    },
-    http: require('./decorators/httpMethod'),
-    middleware: (...names) => names.map(name => ({ name: 'fromStore', options: name })),    
-    Controller: require('./patterns/Controller'),
-    Errors: require('./utils/Errors') 
+    WebServer: require('./WebServer'),    
+    Errors: require('./utils/Errors'),
+    Enums,    
+    Patterns,        
+    
+    // compatible to legacy code
+    enum: Enums, 
+    http: Patterns.http,
+    middleware: Patterns.middleware,    
+    Controller: Patterns.Controller 
 };

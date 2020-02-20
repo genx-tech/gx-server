@@ -45,7 +45,7 @@ module.exports = (app, baseRoute, options) => {
     
     let router = baseRoute === '/' ? new Router() : new Router({prefix: baseRoute});
 
-    app.useMiddleware(router, app.getMiddlewareFactory('jsonError')(), 'jsonError');
+    app.useMiddleware(router, app.getMiddlewareFactory('jsonError')(options.errorOptions, app), 'jsonError');
 
     if (options.middlewares) {
         app.useMiddlewares(router, options.middlewares);
@@ -55,9 +55,17 @@ module.exports = (app, baseRoute, options) => {
     let files = Util.glob.sync(resourcesPath, {nodir: true});
 
     _.each(files, file => {
-        let relPath = path.relative(resourcePath, file);          
-        let batchUrl = Util.ensureLeftSlash(relPath.substring(0, relPath.length - 3).split(path.sep).map(p => _.kebabCase(p)).join('/'));
-        let singleUrl = options.idRegExp ? batchUrl + `/:id(${options.idRegExp})` : batchUrl + '/:id'; 
+        let relPathWoe = path.relative(resourcePath, file).slice(0, -3);          
+        let baseEndpoint, entityName = path.basename(file, '.js');
+
+        if (options.remaps && relPathWoe in options.remaps) {
+            baseEndpoint = Util.ensureLeftSlash(Util.trimRightSlash(options.remaps[relPathWoe]));
+        } else {
+            baseEndpoint = Util.ensureLeftSlash(relPathWoe.split(path.sep).map(p => _.kebabCase(p)).join('/'));
+        }
+
+        let idName = _.camelCase(entityName) + 'Id';
+        let singleUrl = options.idRegExp ? baseEndpoint + `/:${idName}(${options.idRegExp})` : baseEndpoint + `/:${idName}`; 
         
         let controller = require(file);
         let isObj = false;
@@ -68,15 +76,15 @@ module.exports = (app, baseRoute, options) => {
         }        
 
         if (hasMethod(controller, 'findMany_')) {
-            app.addRoute(router, 'get', batchUrl, isObj ? controller.findMany_.bind(controller) : controller.findMany_);
+            app.addRoute(router, 'get', baseEndpoint, isObj ? controller.findMany_.bind(controller) : controller.findMany_);
         }
 
         if (hasMethod(controller, 'create_')) {
-            app.addRoute(router, 'post', batchUrl, isObj ? controller.create_.bind(controller) : controller.create_);
+            app.addRoute(router, 'post', baseEndpoint, isObj ? controller.create_.bind(controller) : controller.create_);
         }
 
         if (options.withKeyValuePairInPath && hasMethod(controller, 'findOneBy_')) {
-            app.addRoute(router, 'get', batchUrl + '/:key/:value', isObj ? controller.findOneBy_.bind(controller) : controller.findOneBy_);
+            app.addRoute(router, 'get', baseEndpoint + '/:key/:value', isObj ? controller.findOneBy_.bind(controller) : controller.findOneBy_);
         }
 
         if (hasMethod(controller, 'findOne_')) {

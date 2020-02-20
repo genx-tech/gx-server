@@ -74,6 +74,31 @@ const Routable = T => class extends T {
         return super.stop_();
     }
 
+    getBackendAction(actionByPath) {
+        let lpos = actionByPath.lastIndexOf('.');
+
+        if (lpos === -1) {
+            throw new Error(`Invalid action path: ${actionByPath}`);
+        }
+
+        let controller = actionByPath.substr(0, lpos);
+        let method = actionByPath.substr(lpos+1);
+        let controllerObj;
+
+        try {
+            controllerObj = require(path.join(this.backendPath, controller));
+        } catch (error) {
+            throw new Error(`Backend controller not found: ${controller}`);
+        }       
+
+        let methodFunc = controllerObj[method];
+        if (typeof methodFunc !== 'function') {
+            throw new Error(`The specified action is not a function: ${actionByPath}`);
+        }
+
+        return methodFunc;
+    }
+
     /**
      * Load and regsiter middleware files from a specified path.
      * @param dir

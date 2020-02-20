@@ -1,4 +1,4 @@
-exports.Controller = require('./controller');
+exports.Controller = require('./Controller');
 exports.rest = require('./restful');
 exports.http = require('./httpMethod');
 

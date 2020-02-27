@@ -44,7 +44,7 @@ const Routable = T => class extends T {
 
         //inject the appModule instance in the first middleware
         this.router.use((ctx, next) => { 
-            ctx.app = ctx.appModule = this; 
+            ctx.appModule = this; 
             return next(); 
         });
 

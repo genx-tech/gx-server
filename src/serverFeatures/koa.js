@@ -68,18 +68,21 @@ module.exports = {
         }
 
         koa.on('error', (err, ctx) => {
-            let extra = _.pick(err, ['name', 'status', 'code', 'extraInfo', 'stack']);
+            let extra = _.pick(err, [ 'status', 'code', 'info' ]);
 
             if (ctx) {
                 extra.request = _.pick(ctx, ['method', 'url', 'ip']);
             }
 
-            if (err.status && err.status < 500) {                
+            if (err.status && err.status < 500) {             
+                if (server.env === 'development') {
+                    extra.stack = err.stack;
+                }   
                 server.log('warn', `[${err.status}] ` + err.message, extra);
                 return;
             } 
             
-            server.log('error', `[${err.status}] ` + err.message, extra);
+            server.logError(error);
         });                
         
         server.httpServer = require('http').createServer(koa.callback());                

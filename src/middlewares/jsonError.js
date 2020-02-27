@@ -19,29 +19,22 @@ module.exports = (opt, app) => {
         try {
             await next();
             if (ctx.response.status === 404 && !ctx.response.body) ctx.throw(404);
-        } catch (err) {
-            ctx.status = typeof err.status === 'number' ? err.status : 500;        
-        
-            // accepted types
+        } catch (err) {        
+            ctx.status = typeof err.status === 'number' ? err.status : 500;               
             ctx.type = 'application/json';
 
-            if (handler) {
-                ctx.body = await handler(ctx, err);
-            } else {
-                let errorObject = { 
-                    error: err.expose ? err.message : http.STATUS_CODES[ctx.status],
-                    ..._.pick(err, ['code', 'errorCode', 'payload']) 
-                };
+            // accepted types
+            if (handler) {      
+                try {                    
+                    ctx.body = await handler(ctx, err);             
+                    return;
+                } catch (error) {
+                    error.innerError = err;
+                    err = error;
+                }                   
+            }             
 
-                if (ctx.appModule.env === 'development') {
-                    errorObject.stack = err.stack;
-                    errorObject.appModule = ctx.appModule.name;
-                }        
-
-                ctx.body = errorObject;
-            }
-
-            // application
+            ctx.body = { error: err.expose ? err.message : http.STATUS_CODES[ctx.status] };
             ctx.app.emit('error', err, ctx);
         }        
     } 

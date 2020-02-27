@@ -8,11 +8,19 @@ const statusToError = {
 
 const unknownError = 'unknown_error';
 
-const wrapRequest = (ctx) => ({
-    method: ctx.method,
-    endpoint: ctx._matchedRoute,
-    query: _.toPlainObject(ctx.query)
-});
+const wrapRequest = (ctx) => { 
+    let req = {
+        method: ctx.method,
+        endpoint: ctx._matchedRoute,
+        query: _.toPlainObject(ctx.query)
+    };
+
+    if (!_.isEmpty(ctx.params)) {
+        req.params = ctx.params
+    }
+
+    return req;
+};
 
 exports.wrapQuery = (ctx, actualQuery, result, extra) => {
     let { status, ...others } = extra || {};
@@ -34,8 +42,8 @@ exports.wrapQuery = (ctx, actualQuery, result, extra) => {
     return {
         status,
         request,
-        response: result,
         actualQuery,
+        response: result,        
         ...others
     };
 };
@@ -49,16 +57,11 @@ exports.wrapError = (ctx, error) => {
 
     let code = statusToError[ctx.status] || unknownError;
 
-    if (ctx.app.env !== 'production') {
-        response.app = ctx.app.name;
-        response.stack = err.stack;        
-    }        
-
     return {
         status: 'error',
+        code,
         request,
-        response,
-        code
+        response
     };
 };
 
@@ -83,8 +86,8 @@ exports.wrapOperation = (ctx, operation, result, extra) => {
     return {
         status,
         request,
-        response: result,
         operation,
+        response: result,        
         ...others
     };
 }

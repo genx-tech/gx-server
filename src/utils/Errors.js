@@ -5,47 +5,60 @@
  * @module Errors
  */
 
-const { Errors: { GeneralError, ApplicationError, InvalidArgument, InvalidConfiguration }, Helpers: { withProps, withArgFill } } = require('@genx/app');
-const HttpCode = require('http-status-codes');
+const { 
+    Errors: { GeneralError, ApplicationError, InvalidArgument, InvalidConfiguration, ExposableError }
+} = require('@genx/app');
 
-const ExposableError = withProps(GeneralError, { expose: true });
+const HttpCode = require('http-status-codes');
 
 /**
  * Request errors.
  * @class
- * @extends GeneralError  
- * @mixes withArgFill
+ * @extends ExposableError  
  */
-const BadRequest = withArgFill(ExposableError, 2, HttpCode.BAD_REQUEST, 'E_BAD_REQ');
+class BadRequest extends ExposableError {
+    constructor(message, info) {
+        super(message, info, HttpCode.BAD_REQUEST, 'E_BAD_REQ');
+    }
+}  
    
 /**
  * Http NotFound, 404.
  * @class 
- * @extends RequestError
- * @mixes withArgFill
+ * @extends ExposableError
  */
-const NotFound = withArgFill(ExposableError, 2, HttpCode.NOT_FOUND, 'E_NOT_FOUND');
+class NotFound extends ExposableError {
+    constructor(message, info) {
+        super(message, info, HttpCode.NOT_FOUND, 'E_NOT_FOUND');
+    }
+}  
 
 /**
- * Http MethodNotAllowed, 405.
+ * Http Unauthorized, 401.
  * @class 
- * @extends RequestError
- * @mixes withArgFill
+ * @extends ExposableError
  */
-const MethodNotAllowed = withArgFill(ExposableError, 2, HttpCode.METHOD_NOT_ALLOWED, 'E_METHOD_NOT_ALLOWED');
+class Unauthorized extends ExposableError {
+    constructor(message, info) {
+        super(message, info, HttpCode.UNAUTHORIZED, 'E_UNAUTHORIZED');
+    } 
+} 
 
 /**
- * Service unavailable error.
+ * Service unavailable error, 503
  * @class
- * @extends ApplicationError 
- * @mixes withArgFill
+ * @extends GeneralError  
  */
-const ServiceUnavailable = withArgFill(GeneralError, 2, HttpCode.SERVICE_UNAVAILABLE, 'E_UNAVAILABLE');
+class ServiceUnavailable extends GeneralError {
+    constructor(message, info) {
+        super(message, info, HttpCode.SERVICE_UNAVAILABLE, 'E_UNAVAILABLE');
+    }
+}
 
 exports.InvalidArgument = InvalidArgument;
 exports.InvalidConfiguration = InvalidConfiguration;
 exports.BadRequest = BadRequest;
 exports.NotFound = NotFound;
-exports.MethodNotAllowed = MethodNotAllowed;
+exports.Unauthorized = Unauthorized;
 exports.ServerError = ApplicationError;
 exports.ServiceUnavailable = ServiceUnavailable;

@@ -82,7 +82,7 @@ module.exports = {
                 return;
             } 
             
-            server.logError(error);
+            server.logError(err);
         });                
         
         server.httpServer = require('http').createServer(koa.callback());                

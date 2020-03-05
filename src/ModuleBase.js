@@ -75,7 +75,13 @@ const ModuleBase = Base => class extends Base {
         if (this.options.logWithAppName) {
             message = '[' + this.name + '] ' + message;
         }
-        this.server.log(level, message, ...rest);
+
+        if (this.logger) {
+            this.logger.log(level, message, ...rest);
+        } else {
+            this.server.log(level, message, ...rest);
+        }
+        
         return this;
     }
 

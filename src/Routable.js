@@ -31,12 +31,6 @@ const Routable = T => class extends T {
         this.publicPath = this.toAbsolutePath(this.options.publicPath || Literal.PUBLIC_PATH);
 
         /**
-         * Backend files path.
-         * @member {string}         
-         **/
-        this.backendPath = this.toAbsolutePath(this.options.backendPath || (process.env.NODE_RT && process.env.NODE_RT === 'babel' ? Literal.BACKEND_SRC_PATH : Literal.BACKEND_PATH)); 
-
-        /**
          * Each app has its own router.
          * @member {Koa}
          **/

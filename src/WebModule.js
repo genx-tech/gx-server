@@ -3,15 +3,16 @@
 const { _, ensureLeftSlash, trimRightSlash } = require('rk-utils');
 const path = require('path');
 const { ServiceContainer } = require('@genx/app');
+const ModuleBase = require('./ModuleBase');
 const Routable = require('./Routable');
 const Literal = require('./enum/Literal');
 
 /**
  * Web application module class.
  * @class
- * @extends Routable(ServiceContainer)
+ * @extends Routable(LibModule)
  */
-class WebModule extends Routable(ServiceContainer) {
+class WebModule extends ModuleBase(Routable(ServiceContainer)) {
     /**     
      * @param {WebServer} server
      * @param {string} name - The name of the app module.
@@ -21,22 +22,7 @@ class WebModule extends Routable(ServiceContainer) {
      * @property {bool} [options.logWithAppName=false] - Flag to include app name in log message.
      */
     constructor(server, name, route, appPath, options) {    
-        super(name, Object.assign({
-            workingPath: appPath, 
-            configPath: path.join(appPath, Literal.DEFAULT_CONFIG_PATH)
-        }, options));
-
-        /**
-         * Hosting server.
-         * @member {WebServer}
-         **/
-        this.server = server;        
-
-        /**
-         * Whether it is a server.
-         * @member {boolean}
-         **/
-        this.isServer = false;
+        super(server, name, appPath, options);
 
         /**
          * Mounting route.
@@ -45,44 +31,10 @@ class WebModule extends Routable(ServiceContainer) {
         this.route = ensureLeftSlash(trimRightSlash(route));               
     }  
 
-    /**
-     * Get a service from module hierarchy     
-     * @param name
-     * @returns {object}
-     */
-    getService(name, currentModuleOnly) {
-        return super.getService(name) || (!currentModuleOnly && this.server.getService(name));
-    }    
-
-    /**
-     * Default log method, may be override by loggers feature
-     * @param {string} level - Log level
-     * @param {string} message - Log message
-     * @param {...object} rest - Extra meta data
-     * @returns {Routable}
-     */
-    log(level, message, ...rest) {
-        if (this.options.logWithAppName) {
-            message = '[' + this.name + '] ' + message;
-        }
-        this.server.log(level, message, ...rest);
-        return this;
-    }
-
     _getFeatureFallbackPath() {
         let pathArray = super._getFeatureFallbackPath();
-        pathArray.splice(1, 0, path.resolve(__dirname, Literal.FEATURES_PATH), path.resolve(__dirname, Literal.APP_FEATURES_PATH));
+        pathArray.splice(2, 0, path.resolve(__dirname, Literal.APP_FEATURES_PATH));
         return pathArray;
-    }
-
-    _initialize() {
-    }
-
-    _uninitialize() {
-    }
-
-    _getConfigVariables() {
-        return { ...super._getConfigVariables(), custom: this.customConfig };
     }
 }
 

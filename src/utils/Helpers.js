@@ -2,6 +2,7 @@
 
 const _ = require('rk-utils')._;
 const { InvalidConfiguration } = require('../utils/Errors');
+const Literal = require('../enum/Literal');
 
 exports.requireFeatures = function (features, app, middleware) {
     let hasNotEnabled = _.find(_.castArray(features), feature => !app.enabled(feature));
@@ -25,3 +26,8 @@ exports.hasMethod = function hasMethod(obj, name) {
 
     return hasMethod(proto, name);
 };
+
+/**
+ * when running with [NODE_RT=babel], directly use source files
+ */
+exports.defaultBackendPath = (process.env.NODE_RT && process.env.NODE_RT === 'babel') ? Literal.BACKEND_SRC_PATH : Literal.BACKEND_PATH;

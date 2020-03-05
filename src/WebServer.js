@@ -5,6 +5,7 @@ const { _, eachAsync_ } = require('rk-utils');
 const { Runable, ServiceContainer } = require('@genx/app');
 const Routable = require('./Routable');
 const Literal = require('./enum/Literal');
+const { defaultBackendPath } = require('./utils/Helpers');
 const mount = require('koa-mount');
 
 /**
@@ -48,6 +49,12 @@ class WebServer extends Routable(Runable(ServiceContainer)) {
         this.isServer = true;
 
         /**
+         * Backend files path.
+         * @member {string}         
+         **/
+        this.backendPath = this.toAbsolutePath(this.options.backendPath || defaultBackendPath); 
+
+        /**
          * App modules path.
          * @member {string}
          */
@@ -66,11 +73,18 @@ class WebServer extends Routable(Runable(ServiceContainer)) {
     }
 
     async stop_() {
-        if (this.started && this.appModules) {
-            await eachAsync_(this.appModules, app => app.stop_());
-            delete this.appModules;
-            delete this.appModulesByAlias;
-        }        
+        if (this.started) {
+            if (this.appModules) {
+                await eachAsync_(this.appModules, app => app.stop_());
+                delete this.appModules;
+                delete this.appModulesByAlias;
+            }       
+            
+            if (this.libModules) {
+                await eachAsync_(this.libModules, lib => lib.stop_());
+                delete this.libModules;
+            }
+        }
 
         if (this.httpServer) {
             await new Promise((resolve, reject) => {
@@ -117,8 +131,20 @@ class WebServer extends Routable(Runable(ServiceContainer)) {
     }
 
     /**
+     * Register a loaded lib module
+     * @param {LibModule} lib 
+     */
+    registerLib(lib) {
+        if (!this.libModules) {
+            this.libModules = {};
+        }
+
+        this.libModules[lib.name] = lib;
+    }
+
+    /**
      * Get the app module object by base route
-     * @param {*} p - App module base route started with "/"
+     * @param {string} p - App module base route started with "/"
      */
     getAppByRoute(p) {
         return this.appModules[p];
@@ -126,12 +152,43 @@ class WebServer extends Routable(Runable(ServiceContainer)) {
 
     /**
      * Get the app module object by app alias, usually the app name if no duplicate entry
-     * @param {*} a - App module alias
+     * @param {string} a - App module alias
      */
     getAppByAlias(a) {
         return this.appModulesByAlias[a];
     }
 
+    /**
+     * Get the lib module
+     * @param {string} libName 
+     */
+    getLib(libName) {
+        if (!this.libModules) {
+            throw new Error('"libModules" feature is required to access lib among modules.');
+        }
+
+        let libModule = this.libModules[libName];
+        
+        if (!libModule) {
+            throw new Error(`Lib module [${libName}] not found.`);
+        }
+
+        return libModule;
+    }
+
+    /**
+     * Require a module from the source path of a library module
+     * @param {*} relativePath 
+     */
+    requireFromLib(libName, relativePath) {
+        let libModule = this.getLib(libName);
+        return libModule.require(relativePath);
+    }
+
+    /**
+     * Get a registered service
+     * @param {string} name 
+     */
     getService(name) {
         let pos = name.indexOf(':');
         if (pos === -1) {
@@ -147,7 +204,7 @@ class WebServer extends Routable(Runable(ServiceContainer)) {
 
     _getFeatureFallbackPath() {
         let pathArray = super._getFeatureFallbackPath();
-        pathArray.splice(1, 0, path.resolve(__dirname, Literal.FEATURES_PATH), path.resolve(__dirname, Literal.SERVER_FEATURES_PATH));
+        pathArray.splice(1, 0, path.resolve(__dirname, Literal.FEATURES_PATH), path.resolve(__dirname, Literal.APP_FEATURES_PATH), path.resolve(__dirname, Literal.SERVER_FEATURES_PATH));
         return pathArray;
     }
 }

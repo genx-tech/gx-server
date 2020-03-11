@@ -51,7 +51,7 @@ exports.getValueFromCtx = (ctx, name, type, optional, defaultValue, sources) => 
     }
 
     return type.sanitize(value);
-}
+};
 
 exports.expectToBeOneOf = (name, value, list, forceTo) => {
     (list instanceof Set) || (list = new Set(list));

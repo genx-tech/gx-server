@@ -2,21 +2,21 @@
 
 const path = require('path');
 const Util = require('rk-utils');
-const WebServer = require('../../../lib/WebServer');
-const { Manager } = require('socket.io-client');
+const WebServer = require('../../../src/WebServer');
 
 const WORKING_DIR = path.resolve(__dirname, '../../../test/temp');
 
 const WelcomeMessage = "What's up?";
 
-describe('unit:features:socketServer', function () {
+describe.only('unit:features:socketServer', function () {
     let webServer;
 
     before(async function () {
         Util.fs.emptyDirSync(WORKING_DIR);
-        let controllerPath = path.join(WORKING_DIR, 'server/wsControllers');
+        let controllerPath = path.join(WORKING_DIR, 'server/events');
         Util.fs.ensureDirSync(controllerPath);
         Util.fs.copyFileSync(path.resolve(__dirname, '../../../test/fixtures/files/heartbeat.js'), path.join(controllerPath, 'heartbeat.js'));
+        Util.fs.copyFileSync(path.resolve(__dirname, '../../../test/fixtures/files/welcome.js'), path.join(controllerPath, 'welcome.js'));
 
         webServer = new WebServer('test server', { 
             workingPath: WORKING_DIR
@@ -28,10 +28,10 @@ describe('unit:features:socketServer', function () {
                 },
                 "socketServer": {
                     "path": "/ws-api",                    
-                    "channels": {    
+                    "routes": {    
                         "/heartbeat": {
                             "controller": "heartbeat",
-                            "welcomeMessage": WelcomeMessage
+                            "welcome": "welcome.send"
                         }
                     }        
                 }

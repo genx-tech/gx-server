@@ -9,9 +9,9 @@
   "scripts": {
     "doc": "jsdoc -c jsdoc.json -t ./node_modules/ink-docstrap/template -R README.md -d './docs' -r --verbose ./src",
     "test:all": "npm run test:spec && npm run test:mocha",
-    "test:spec": "mocha --recursive src/**/*.spec.js",
-    "test:mocha": "mocha test/*.mocha.js",
-    "test": "npm run build:test && npm run test:all",
+    "test:spec": "mocha ---require @babel/register --recursive src/**/*.spec.js",
+    "test:mocha": "mocha ---require @babel/register test/*.mocha.js",
+    "test": "npm run test:all",
     "cover": "npm run build:test && npm run cover:unit && npm run cover:integration && npm run cover:report",
     "cover:unit": "nyc --silent npm run test:spec",
     "cover:integration": "nyc --silent --no-clean npm run test:mocha",
@@ -19,7 +19,6 @@
     "bulid:clean": "rm -rf lib",
     "build": "npm run bulid:clean && NODE_ENV=development babel src -d lib --copy-files && del lib/**/__test__",
     "build:prod": "npm run bulid:clean && NODE_ENV=production babel src -d lib --copy-files && del lib/**/__test__",
-    "build:test": "npm run bulid:clean && NODE_ENV=test babel src -d lib --copy-files && del lib/**/__test__",
     "build:watch": "NODE_ENV=development babel src -w -d lib --copy-files"
   },
   "keywords": [
@@ -46,6 +45,10 @@
       "src"
     ]
   },
+  "mocha": {       
+    "require": [ "should" ], 
+    "timeout": 30000
+  },  
   "peerDependencies": {
     "@genx/app": "*"
   },
@@ -70,8 +73,8 @@
     "koa-error": "^3.2.0",
     "koa-etag": "^3.0.0",
     "koa-flash-message": "^0.1.6",
-    "koa-override": "^3.0.0",
     "koa-mount": "^4.0.0",
+    "koa-override": "^3.0.0",
     "koa-session": "^5.10.1",
     "koa-session-memory": "^1.0.2",
     "koa-static": "^5.0.0",

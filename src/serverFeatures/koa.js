@@ -103,6 +103,7 @@ module.exports = {
                 }
 
                 server.host = `${host}:${address.port}`;
+                server.port = address.port;
 
                 server.log('info', `A http service is listening on port [${address.port}] ...`);
                 /**

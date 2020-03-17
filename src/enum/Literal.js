@@ -73,11 +73,6 @@ module.exports = Object.assign({}, Literal, {
     RESOURCES_PATH: 'resources',
 
     /**
-     * Web-socket controllers path
-     */
-    WS_CONTROLLERS_PATH: 'wsControllers',
-
-    /**
      * Views files path, under backend folder
      */
     VIEWS_PATH: 'views',

@@ -8,7 +8,7 @@ const WORKING_DIR = path.resolve(__dirname, '../../../test/temp');
 
 const WelcomeMessage = "What's up?";
 
-describe.only('unit:features:socketServer', function () {
+describe('unit:features:socketServer', function () {
     let webServer;
 
     before(async function () {
@@ -31,7 +31,7 @@ describe.only('unit:features:socketServer', function () {
                     "routes": {    
                         "/heartbeat": {
                             "controller": "heartbeat",
-                            "welcome": "welcome.send"
+                            "onConnect": "welcome.send"
                         }
                     }        
                 }

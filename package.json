@@ -9,8 +9,8 @@
   "scripts": {
     "doc": "jsdoc -c jsdoc.json -t ./node_modules/ink-docstrap/template -R README.md -d './docs' -r --verbose ./src",
     "test:all": "npm run test:spec && npm run test:mocha",
-    "test:spec": "mocha ---require @babel/register --recursive src/**/*.spec.js",
-    "test:mocha": "mocha ---require @babel/register test/*.mocha.js",
+    "test:spec": "mocha --recursive src/**/*.spec.js",
+    "test:mocha": "mocha test/*.mocha.js",
     "test": "npm run test:all",
     "cover": "npm run build:test && npm run cover:unit && npm run cover:integration && npm run cover:report",
     "cover:unit": "nyc --silent npm run test:spec",
@@ -46,7 +46,7 @@
     ]
   },
   "mocha": {       
-    "require": [ "should" ], 
+    "require": [ "@babel/register", "should" ], 
     "timeout": 30000
   },  
   "peerDependencies": {

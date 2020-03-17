@@ -154,15 +154,9 @@ function startSocketServer(appModule, config) {
             });
         }
 
-        if (_.isEmpty(eventHandlers)) {
-            throw new InvalidConfiguration(
-                'Missing socket response controller or event hooks.',
-                appModule,
-                `socketServer.routes.${name}`
-            );
-        }
-
         namespaceChannel.on('connect', function (socket) {
+            let ctx = { appModule, socket };
+
             socket.on('disconnect', () => {
                 log('verbose', 'namespace disconnect', { 
                     endpoint: endpointPath,
@@ -170,6 +164,10 @@ function startSocketServer(appModule, config) {
                     id: socket.id, 
                     namespace: name 
                 });
+
+                if (info.onDisconnect) {
+                    loadEventHandler(appModule, name, controllersPath, info.onDisconnect)(ctx).catch(error => log('error', error.message));            
+                }     
             });
 
             log('verbose', 'namespace connect', { 
@@ -177,19 +175,15 @@ function startSocketServer(appModule, config) {
                 port,
                 id: socket.id, 
                 namespace: name 
-            });
-
-            let ctx = { appModule, socket };
+            });           
 
             //Register event handlers
-            for (let event in eventHandlers) {
-                let handler = eventHandlers[event];
-
+            eventHandlers && _.forOwn(eventHandlers, (handler, event) => {
                 socket.on(event, (data, cb) => handler(ctx, data).then(cb));
-            }                
+            });                
 
-            if (info.welcome) {
-                loadEventHandler(appModule, name, controllersPath, info.welcome)(ctx).catch(error => log('error', error.message));            
+            if (info.onConnect) {
+                loadEventHandler(appModule, name, controllersPath, info.onConnect)(ctx).catch(error => log('error', error.message));            
             }            
         });
     });

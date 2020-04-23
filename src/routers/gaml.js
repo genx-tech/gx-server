@@ -101,7 +101,7 @@ module.exports = (app, baseRoute, options) => {
             app.addRoute(router, 'get', endpointWithId, (ctx) => controller.findById(ctx, ctx.params[idName]));
         }
 
-        if (hasMethod(controller, 'deleteById')) {
+        if (hasMethod(controller, 'updateById')) {
             app.addRoute(router, 'put', endpointWithId, (ctx) => controller.updateById(ctx, ctx.params[idName]));
         }
 

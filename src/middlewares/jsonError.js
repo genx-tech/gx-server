@@ -26,7 +26,7 @@ module.exports = (opt, app) => {
                 }  
             }
         } catch (err) {        
-            ctx.status = typeof err.status === 'number' ? err.status : 500;               
+            ctx.status = typeof err.status === 'number' && err.status >= 100 ? err.status : 500;               
             ctx.type = 'application/json';
 
             // accepted types

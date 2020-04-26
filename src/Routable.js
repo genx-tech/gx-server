@@ -357,7 +357,7 @@ const Routable = T => class extends T {
 
     _wrapMiddlewareTracer(middleware, name) {        
         if (this.options.traceMiddlewares) {            
-            return async (ctx, next) => {
+            return async (ctx, next) => {                
                 this.log('debug', `Step in middleware "${name || middleware.name}" ...`);                
                 let ret = await middleware(ctx, next);
                 this.log('debug', `Step out from middleware "${name || middleware.name}".`);                

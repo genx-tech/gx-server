@@ -94,7 +94,7 @@ module.exports = {
         server.log('verbose', `App [${app.name}] is loaded.`);
 
         //delayed the app routes mounting after all plugins of the server are loaded
-        server.on('after:' + Feature.PLUGIN, () => {
+        server.on('before:' + Feature.READY, () => {
             server.mountApp(app);
         });        
     })

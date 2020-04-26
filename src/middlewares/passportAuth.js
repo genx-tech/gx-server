@@ -33,7 +33,7 @@ let createMiddleware = (opt, app) => {
             'passport'
         );
     }
-    
+
     return passportService.authenticate(opt.strategy, opt.options);
 };
 

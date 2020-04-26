@@ -74,6 +74,8 @@ module.exports = {
                 extra.request = _.pick(ctx, ['method', 'url', 'ip']);
             }
 
+            extra.app = ctx.appModule.name;
+
             if (err.status && err.status < 500) {             
                 if (server.env === 'development') {
                     extra.stack = err.stack;

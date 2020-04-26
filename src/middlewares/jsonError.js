@@ -29,6 +29,8 @@ module.exports = (opt, app) => {
             ctx.status = typeof err.status === 'number' && err.status >= 100 ? err.status : 500;               
             ctx.type = 'application/json';
 
+            console.log('jsonError', ctx.appModule.name);
+
             // accepted types
             if (handler) {      
                 try {                    

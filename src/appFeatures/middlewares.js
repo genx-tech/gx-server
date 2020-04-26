@@ -23,8 +23,10 @@ module.exports = {
      */
     load_: function (app, middlewares) {
         //delay to load middlewares after all plug-ins are ready
+        app.useMiddlewares(app.router, middlewares);
+        /*
         app.on('after:' + Feature.PLUGIN, () => {
-            app.useMiddlewares(app.router, middlewares);
-        });        
+            
+        }); */       
     }
 };

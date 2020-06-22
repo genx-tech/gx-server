@@ -55,10 +55,23 @@ class ServiceUnavailable extends GeneralError {
     }
 }
 
+/**
+ * Internal server error, 500
+ */
+class ServerError extends ApplicationError {
+}
+
+/**
+ * Internal server error, 500
+ */
+class ExternalServiceError extends ApplicationError {
+}
+
 exports.InvalidArgument = InvalidArgument;
 exports.InvalidConfiguration = InvalidConfiguration;
 exports.BadRequest = BadRequest;
 exports.NotFound = NotFound;
 exports.Unauthorized = Unauthorized;
-exports.ServerError = ApplicationError;
+exports.ServerError = ServerError;
+exports.ExternalServiceError = ExternalServiceError;
 exports.ServiceUnavailable = ServiceUnavailable;

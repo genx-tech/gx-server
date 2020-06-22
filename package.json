@@ -56,7 +56,7 @@
     "@genx/app": "*"
   },
   "devDependencies": {
-    "@genx/app": "genx-tech/gx-app#v-next",
+    "@genx/app": "genx-tech/gx-app",
     "koa-passport": "^4.0.1",
     "luxon": "^1.22.0",
     "mysql2": "^1.6.4",

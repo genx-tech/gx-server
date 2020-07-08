@@ -38,7 +38,7 @@ class NotFound extends ExposableError {
  * @class 
  * @extends ExposableError
  * 
- * 401 UNAUTHORIZED vs 403 FORBIDDEN
+ * 401 UNAUTHORIZED vs 403 FORBIDDEN (refer to explanation from Daniel Irvine)
  * 401 It’s for authentication, not authorization. 
  * Receiving a 401 response is the server telling you, “you aren’t authenticated–either not authenticated at all or authenticated incorrectly–but please reauthenticate and try again.” 
  * To help you out, it will always include a WWW-Authenticate header that describes how to authenticate.
@@ -54,7 +54,7 @@ class Unauthorized extends ExposableError {
  * @class 
  * @extends ExposableError
  * 
- * 401 UNAUTHORIZED vs 403 FORBIDDEN
+ * 401 UNAUTHORIZED vs 403 FORBIDDEN (refer to explanation from Daniel Irvine)
  * Receiving a 403 response is the server telling you, “I’m sorry. I know who you are–I believe who you say you are–but you just don’t have permission to access this resource. Maybe if you ask the system administrator nicely, you’ll get permission. But please don’t bother me again until your predicament changes.”
  * In summary, a 401 Unauthorized response should be used for missing or bad authentication, and a 403 Forbidden response should be used afterwards, when the user is authenticated but isn’t authorized to perform the requested operation on the given resource.
  */

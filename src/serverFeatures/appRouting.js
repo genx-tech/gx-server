@@ -72,6 +72,8 @@ module.exports = {
         }
     
         let app = new WebModule(server, config.name, baseRoute, appPath, options);
+        app.now = server.now;
+        app.__ = server.__;
         
         app.on('configLoaded', () => {
             if (!Util._.isEmpty(config.settings)) {

@@ -335,7 +335,7 @@ const Routable = T => class extends T {
 
             Object.assign(ctx.state, {
                 _self: ctx.originalUrl || this.toWebPath(ctx.url),
-                __: ctx.__,
+                __: this.__,
                 _base: ensureRightSlash(this.toWebPath()),
                 _makePath: (relativePath, query) => this.toWebPath(relativePath, query),
                 _makeUrl: (relativePath, query) => ctx.toUrl(relativePath, query)            

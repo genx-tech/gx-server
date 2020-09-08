@@ -8,7 +8,8 @@ const Enums = {
 const Patterns = require('./patterns');
 
 module.exports = {    
-    WebServer: require('./WebServer'),    
+    WebServer: require('./WebServer'),   
+    LibModule: require('./LibModule'),    
     Errors: require('./utils/Errors'),
     Helpers: require('./utils/Helpers'),
     Enums,    

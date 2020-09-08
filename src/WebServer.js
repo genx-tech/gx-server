@@ -6,7 +6,6 @@ const { Runable, ServiceContainer } = require('@genx/app');
 const Routable = require('./Routable');
 const Literal = require('./enum/Literal');
 const { defaultBackendPath } = require('./utils/Helpers');
-const mount = require('koa-mount');
 
 /**
  * Web server class.
@@ -113,7 +112,8 @@ class WebServer extends Routable(Runable(ServiceContainer)) {
 
         assert: !this.appModules.hasOwnProperty(app.route);
 
-        this.router.use(mount(app.route, app.router));
+        this.mountRouter(app.route, app.router);
+        
         this.appModules[app.route] = app;
 
         if (app.name in this.appModulesByAlias) {
@@ -131,22 +131,11 @@ class WebServer extends Routable(Runable(ServiceContainer)) {
     }
 
     /**
-     * Register a loaded lib module
-     * @param {LibModule} lib 
-     */
-    registerLib(lib) {
-        if (!this.libModules) {
-            this.libModules = {};
-        }
-
-        this.libModules[lib.name] = lib;
-    }
-
-    /**
      * Get the app module object by base route
      * @param {string} p - App module base route started with "/"
      */
     getAppByRoute(p) {
+        //todo: change to p-tree
         return this.appModules[p];
     }
 
@@ -159,30 +148,12 @@ class WebServer extends Routable(Runable(ServiceContainer)) {
     }
 
     /**
-     * Get the lib module
-     * @param {string} libName 
-     */
-    getLib(libName) {
-        if (!this.libModules) {
-            throw new Error('"libModules" feature is required to access lib among modules.');
-        }
-
-        let libModule = this.libModules[libName];
-        
-        if (!libModule) {
-            throw new Error(`Lib module [${libName}] not found.`);
-        }
-
-        return libModule;
-    }
-
-    /**
-     * Require a module from the source path of a library module
+     * Require a module from the source path of an app module
      * @param {*} relativePath 
      */
-    requireFromLib(libName, relativePath) {
-        let libModule = this.getLib(libName);
-        return libModule.require(relativePath);
+    requireFromApp(appName, relativePath) {
+        const app = this.getAppByAlias(appName);
+        return app.require(relativePath);
     }
 
     /**

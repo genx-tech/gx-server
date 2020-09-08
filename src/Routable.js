@@ -6,6 +6,7 @@ const { Helpers: { tryRequire } } = require('@genx/app');
 const Errors = require('./utils/Errors');
 const Literal = require('./enum/Literal');
 const Koa = require('koa');
+const mount = require('koa-mount');
 
 const Routable = T => class extends T {    
     /**     
@@ -290,6 +291,15 @@ const Routable = T => class extends T {
         this.router.use(nestedRouter.routes());
         this.router.use(nestedRouter.allowedMethods());
         return this;
+    }
+
+    /**
+     * Attach a router to this app module by mounting the router to a route
+     * @param {*} route 
+     * @param {*} router 
+     */
+    mountRouter(route, router) {
+        this.router.use(mount(route, router));
     }
 
     /**

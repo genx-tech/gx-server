@@ -60,8 +60,8 @@ const ModuleBase = Base => class extends Base {
      * Require a module from the source path of a library module
      * @param {*} relativePath 
      */
-    requireFromLib(appName, relativePath) {
-        return this.server.requireFromLib(appName, relativePath);
+    requireFromLib(libName, relativePath) {
+        return this.server.requireFromLib(libName, relativePath);
     }
 
     /**

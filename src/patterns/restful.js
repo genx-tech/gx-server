@@ -22,7 +22,7 @@ const wrapRequest = (ctx) => {
     return req;
 };
 
-exports.wrapQuery = (ctx, actualQuery, result, extra) => {
+exports.wrapQuery = (ctx, actualQuery, result = null, extra) => {
     let { status, ...others } = extra || {};
     let request = wrapRequest(ctx);    
 

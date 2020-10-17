@@ -77,12 +77,7 @@ class WebServer extends Routable(Runable(ServiceContainer)) {
                 await eachAsync_(this.appModules, app => app.stop_());
                 delete this.appModules;
                 delete this.appModulesByAlias;
-            }       
-            
-            if (this.libModules) {
-                await eachAsync_(this.libModules, lib => lib.stop_());
-                delete this.libModules;
-            }
+            }     
         }
 
         if (this.httpServer) {

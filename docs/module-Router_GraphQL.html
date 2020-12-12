@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>@genx/server Module: Middleware_Session</title>
+	<title>@genx/server Module: Router_GraphQL</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -88,7 +88,7 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
 		<div id="main">
 			
 
-	<h1 class="page-title">Module: Middleware_Session</h1>
+	<h1 class="page-title">Module: Router_GraphQL</h1>
 <section>
 
 <header>
@@ -104,14 +104,14 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
     <div class="container-overview">
     
         
-            <div class="description"><p>Session middleware</p></div>
+            <div class="description"><p>GraphQL router.</p></div>
         
 
         
             
 <hr>
 <dt>
-    <h4 class="name" id="module:Middleware_Session"><span class="type-signature"></span>(require("Middleware_Session"))(options, app)</h4>
+    <h4 class="name" id="module:Router_GraphQL"><span class="type-signature"></span>(require("Router_GraphQL"))(app, baseRoute, options)</h4>
     
     
 </dt>
@@ -119,7 +119,7 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
 
     
     <div class="description">
-        <p>Initialize session middleware</p>
+        <p>Create a GraphQL router.</p>
     </div>
     
 
@@ -154,13 +154,13 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
 
         <tr>
             
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>app</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">*</span>
 
 
 
@@ -171,20 +171,44 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
 
             
 
-            <td class="description last"><p>Session options</p></td>
+            <td class="description last"></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>app</code></td>
+                <td class="name"><code>baseRoute</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Routable</span>
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">objects</span>
 
 
 
@@ -226,8 +250,6 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
         
 
         
-        <th>Default</th>
-        
 
         <th class="last">Description</th>
     </tr>
@@ -238,7 +260,7 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
 
         <tr>
             
-                <td class="name"><code>options.key</code></td>
+                <td class="name"><code>options.schema</code></td>
             
 
             <td class="type">
@@ -254,445 +276,30 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
             
                 <td class="attributes">
                 
-                    &lt;optional><br>
-                
 
                 
                 </td>
             
 
             
-                <td class="default">
-                
-                    'mowa:sid'
-                
-                </td>
-            
 
-            <td class="description last"><p>Cookie name defaulting to mowa.sid</p></td>
+            <td class="description last"></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>options.prefix</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    'mowa:sess:'
-                
-                </td>
-            
-
-            <td class="description last"><p>Session prefix for store, defaulting to mowa:sess:</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.maxAge</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>SessionStore's expiration time (ms), defaulting to 86400000 (1 day)</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.autoCommit</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">bool</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    true
-                
-                </td>
-            
-
-            <td class="description last"><p>Automatically commit headers (default true)</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.overwrite</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">bool</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    true
-                
-                </td>
-            
-
-            <td class="description last"><p>Can overwrite or not (default true)</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.httpOnly</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">bool</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    true
-                
-                </td>
-            
-
-            <td class="description last"><p>HttpOnly or not (default true)</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.signed</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">bool</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    true
-                
-                </td>
-            
-
-            <td class="description last"><p>Signed or not</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.rolling</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">bool</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last"><p>Force a session identifier cookie to be set on every response. The expiration is reset to the original maxAge, resetting the expiration countdown. (default is false)</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.renew</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">bool</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last"><p>Renew session when session is nearly expired, so we can always keep user logged in. (default is false)</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.genSid</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>The way of generating external session id is controlled by the options.genid, which defaults to Date.now() + '-' + uid.sync(24)</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.valid</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>valid(ctx, session), valid session value before use it</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.beforeSave</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>beforeSave(ctx, session), hook before save session</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.store</code></td>
+                <td class="name"><code>options.middlewares</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">object</span>
+|
+
+<span class="param-type">array</span>
 
 
 
@@ -710,12 +317,40 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
             
 
             
-                <td class="default">
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options.graphiql</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
                 
                 </td>
             
 
-            <td class="description last"><p>Session store instance. It can be any Object that has the methods set, get, destroy like MemoryStore.</p></td>
+            
+
+            <td class="description last"></td>
         </tr>
 
     
@@ -754,7 +389,7 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
 	
 	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
 	<dd class="tag-source">
-		middlewares/session.js
+		routers/graphql.js
 	</dd>
 	
 
@@ -777,6 +412,19 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
     
 
     
+
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x27;&lt;base path&gt;&#x27;: {
+     graphql: {          
+         middlewares: {},
+         schema: &#x27;graphql/schema&#x27;,
+         rootValue: &#x27;&#x27;,
+         graphiql: true
+     }
+ }</pre>
+
 
     
 </dd>

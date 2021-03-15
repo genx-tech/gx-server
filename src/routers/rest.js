@@ -33,14 +33,6 @@ const getBaseEndpoint = (endpoint, remaps, controller, action, idName) => {
     return endpoint;
 };
 
-/*
-const batchQuery_ = async (ctx) => {
-
-    
-
-};
-*/
-
 /**
  * Create a RESTful router.
  * @param {*} app 

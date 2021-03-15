@@ -2,12 +2,12 @@
 
 const path = require('path');
 const Util = require('rk-utils');
+const { isPlainObject } = require('@genx/july'); 
 const _ = Util._;
-const fs = Util.fs;
 const Literal = require('../enum/Literal');
 const Router = require('@koa/router');
-const Controller = require('../patterns/Controller');
 const { hasMethod } = require('../utils/Helpers');
+const { type } = require('os');
 
 /**
  * Gaml router.
@@ -15,15 +15,6 @@ const { hasMethod } = require('../utils/Helpers');
  */
 
 const appendId = (baseEndpoint, idName) => idName ? `${baseEndpoint}/:${idName}` : baseEndpoint; 
-
-
-/*
-const batchQuery_ = async (ctx) => {
-
-    
-
-};
-*/
 
 /**
  * Create a gaml router.
@@ -41,12 +32,11 @@ const batchQuery_ = async (ctx) => {
  *  }
  *  
  *  route                          http method    function of ctrl
- *  /:resource                     get            findMany_ 
- *  /:resource                     post           create_
- *  /:resource/:unique-key/:value  get            findOneBy_
- *  /:resource/:id                 get            findOne_
- *  /:resource/:id                 put            updateOne_
- *  /:resource/:id                 del            deleteOne_
+ *  /:resource                     get            find 
+ *  /:resource                     post           post
+ *  /:resource/:id                 get            findById
+ *  /:resource/:id                 put            updateById
+ *  /:resource/:id                 del            deleteById
  */
 module.exports = (app, baseRoute, options) => {
     let resourcePath = path.resolve(app.backendPath, options.resourcesPath || Literal.RESOURCES_PATH);
@@ -69,13 +59,10 @@ module.exports = (app, baseRoute, options) => {
 
     _.each(files, file => {
         let entityName = path.basename(file, '.js');
-        
-        let customPath = path.join(resourcePath, 'custom', entityName + '.js');
         let controller = require(file);
 
-        if (fs.existsSync(customPath)) {
-            let subClassFactory = require(customPath);
-            controller = subClassFactory(controller);
+        if (typeof controller === 'function') {
+            controller = new controller(app);
         }
 
         let baseEndpoint;

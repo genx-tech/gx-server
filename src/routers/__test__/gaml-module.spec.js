@@ -13,37 +13,34 @@ const Util = require('rk-utils');
 let books = [ { id: 1, title: 'Book 1' }, { id: 2, title: 'Book 2' } ];
 let maxid = 2;
 
-exports.query = (ctx) => {
+exports.find = (ctx) => {
     ctx.body = books;
 };
 
-exports.create = (ctx) => {
+exports.post = (ctx) => {
     let newBook = {id: ++maxid, title: ctx.request.body.title};
     books.push(newBook);
     ctx.body = newBook;
 };
 
-exports.detail = (ctx) => {
-    let id = ctx.params.id;
+exports.findById = (ctx, id) => {
     ctx.body =  Util._.find(books, book => book.id == id) || {};
 };
 
-exports.update = (ctx) => {
-    let id = ctx.params.id;
+exports.updateById = (ctx, id) => {
     let bookFound = Util._.find(books, book => book.id == id);
 
     bookFound.title = ctx.request.body.title;
     ctx.body =  bookFound;
 };
 
-exports.remove = (ctx) => {
-    let id = ctx.params.id;
+exports.deleteById = (ctx, id) => {
     let idx = Util._.findIndex(books, book => book.id == id);
     ctx.body = books.splice(idx, 1)[0];
 };
 `;
 
-describe('unit:router:rest', function () {
+describe.only('unit:router:gaml-module', function () {
     let webServer;
 
     before(async function () {
@@ -53,20 +50,23 @@ describe('unit:router:rest', function () {
         Util.fs.writeFileSync(path.join(resourcesPath, 'book.js'), resourceBook);
 
         webServer = new WebServer('test server', {
-            workingPath: WORKING_DIR
+            workingPath: WORKING_DIR,
+            logger: {
+                level: 'verbose'
+            }
         });
 
         webServer.once('configLoaded', () => {
             webServer.config = {
                 "koa": {
                 },
-                "middlewares": {
-                    "bodyParser": {},
-                    "methodOverride": {}
-                },
+                "middlewares": [
+                    "koa-body",
+                    "koa-override"
+                ],
                 "routing": {
                     "/api": {
-                        "simpleRest": {}
+                        "gaml": {}
                     }
                 }
             };

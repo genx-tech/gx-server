@@ -1,6 +1,6 @@
 "use strict";
 
-const { InvalidConfiguration } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
 
 /**
  * Passport initialization middleware, required to initialize Passport service.

@@ -5,7 +5,7 @@ const Util = require('rk-utils');
 const _ = Util._;
 const Promise = Util.Promise;
 const validator = require('validator');
-const { InvalidConfiguration } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
 
 /**
  * Koa middleware function

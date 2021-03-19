@@ -7,7 +7,7 @@
 
 const { Feature } = require('..').enum;
 const { tryRequire } = require('@genx/app/lib/utils/Helpers');
-const { InvalidConfiguration } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
 const { fs } = require('rk-utils');
 
 module.exports = {

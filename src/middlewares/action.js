@@ -7,7 +7,7 @@
 
 const Util = require('rk-utils');
 const _ = Util._;
-const { InvalidConfiguration } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
 const Literal = require('../enum/Literal');
 
 const path = require('path');

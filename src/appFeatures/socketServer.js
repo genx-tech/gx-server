@@ -12,7 +12,7 @@ const { _, urlJoin, ensureLeftSlash } = require('rk-utils');
 const { Feature } = require('..').enum;
 const { Helpers: { tryRequire } } = require('@genx/app');
 const SocketServer = tryRequire('socket.io');
-const { InvalidConfiguration } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
 
 const DEFAULT_CONTROLLER_PATH = 'events';
 

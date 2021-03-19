@@ -24,7 +24,7 @@ const Feature = require('@genx/app/lib/enum/Feature');
 const path = require('path');
 const Util = require('rk-utils');
 const Promise = Util.Promise;
-const { InvalidConfiguration } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
 const WebModule = require('../WebModule');
 
 module.exports = {

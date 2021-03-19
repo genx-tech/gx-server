@@ -10,7 +10,7 @@ const Patterns = require('./patterns');
 module.exports = {    
     WebServer: require('./WebServer'),   
     LibModule: require('./LibModule'),    
-    Errors: require('./utils/Errors'),
+    Errors: require('@genx/error'),
     Helpers: require('./utils/Helpers'),
     Enums,    
     Patterns,        

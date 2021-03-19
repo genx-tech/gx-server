@@ -6,7 +6,7 @@
  */
 
 const session = require('koa-session');
-const { InvalidConfiguration } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
 const { tryRequire } = require('@genx/app/lib/utils/Helpers');
 
 const DEFAULT_OPTS = {

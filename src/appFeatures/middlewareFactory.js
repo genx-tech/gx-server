@@ -28,7 +28,7 @@
 
 const { _ } = require('rk-utils');
 const { Feature } = require('..').enum;
-const { InvalidConfiguration } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
  
 
 module.exports = {

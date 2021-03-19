@@ -7,7 +7,7 @@ const Promise = Util.Promise;
 const Literal = require('../enum/Literal');
 const Router = require('@koa/router');
 const Controller = require('../patterns/Controller');
-const { InvalidConfiguration } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
 
 /**
  * Module router for mounting a specific controller.

@@ -10,7 +10,7 @@ const { _, eachAsync_ } = require('rk-utils');
 const { Feature } = require('..').enum;
 const { tryRequire } = require('@genx/app/lib/utils/Helpers');
 const Acl = tryRequire('acl');
-const { InvalidConfiguration } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
 
 module.exports = {
 

@@ -40,7 +40,7 @@ exports.deleteById = (ctx, id) => {
 };
 `;
 
-describe.only('unit:router:gaml-module', function () {
+describe.skip('unit:router:gaml-module', function () {
     let webServer;
 
     before(async function () {

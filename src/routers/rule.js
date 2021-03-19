@@ -5,7 +5,7 @@ const Util = require('rk-utils');
 const _ = Util._;
 const Promise = Util.Promise;
 const Router = require('@koa/router');
-const { InvalidConfiguration } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
 const Literal = require('../enum/Literal');
 
 /**

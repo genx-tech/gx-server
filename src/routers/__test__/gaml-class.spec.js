@@ -84,7 +84,7 @@ describe('unit:router:gaml-class', function () {
         Util.fs.removeSync(WORKING_DIR);
     });
 
-    describe('module function', function () {
+    describe('class function', function () {
         it('should get a list of books', function (done) {
             request(webServer.httpServer)
                 .get('/api/book')

@@ -5,7 +5,7 @@
  * @module Feature_Firebase
  */
 
-const { Feature } = require('..').enum;
+const { Feature } = require('..').Enums;
 const { tryRequire } = require('@genx/app/lib/utils/Helpers');
 const { InvalidConfiguration } = require('@genx/error');
 const { fs } = require('rk-utils');

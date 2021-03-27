@@ -9,7 +9,7 @@
 
 const path = require('path');
 const { _, urlJoin, ensureLeftSlash } = require('rk-utils');
-const { Feature } = require('..').enum;
+const { Feature } = require('..').Enums;
 const { Helpers: { tryRequire } } = require('@genx/app');
 const SocketServer = tryRequire('socket.io');
 const { InvalidConfiguration } = require('@genx/error');

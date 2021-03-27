@@ -27,7 +27,7 @@
  */
 
 const { _ } = require('rk-utils');
-const { Feature } = require('..').enum;
+const { Feature } = require('..').Enums;
 const { InvalidConfiguration } = require('@genx/error');
  
 

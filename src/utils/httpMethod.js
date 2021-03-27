@@ -1,7 +1,4 @@
-"use strict";
-
-const Util = require('rk-utils');
-const _ = Util._;
+const { _ } = require('rk-utils');
 
 function httpMethod(method, middlewares) {
     if (arguments.length === 3) {
@@ -21,8 +18,9 @@ function httpMethod(method, middlewares) {
             throw new Error('Unsupported scenario.');
         }
     
-        if (targetFunction) {
-    
+        if (targetFunction) {    
+            console.log(name, method, isHof);
+
             if (typeof method === 'string') {                
                 let pos = method.indexOf(':/');
     

@@ -6,7 +6,7 @@
  */
 
 const path = require('path');
-const { Feature } = require('..').enum;
+const { Feature } = require('..').Enums;
 const { tryRequire, dependsOn } = require('@genx/app/lib/utils/Helpers');
 
 module.exports = {

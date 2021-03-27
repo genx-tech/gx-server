@@ -5,7 +5,7 @@
  * @module Feature_Middlewares
  */
 
-const { Feature } = require('..').enum;
+const { Feature } = require('..').Enums;
 
 module.exports = {
 

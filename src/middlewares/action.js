@@ -42,12 +42,12 @@ module.exports = (controllerAction, app) => {
             throw new InvalidConfiguration(`${controllerAction} does not contain a valid action in returned middleware chain.`, app);
         }    
 
-        return actioner.concat(app.wrapAction(actionFunction));
+        return actioner.concat(actionFunction);
     } 
 
     if (typeof actioner !== 'function') {
         throw new InvalidConfiguration(`${controllerAction} is not a valid action.`, app);
     }    
 
-    return app.wrapAction(actioner);
+    return actioner;
 };

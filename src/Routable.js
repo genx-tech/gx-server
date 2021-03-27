@@ -329,34 +329,6 @@ const Routable = T => class extends T {
         }
 
         return url;
-    }    
-
-    /**
-     * Prepare context for koa action
-     * @param {Object} ctx - Koa request context
-     * @param {function} action - Action function
-     * @return {function}
-     */
-    wrapAction(action) {
-        return async (ctx) => {
-            ctx.toUrl = (relativePath, ...pathOrQuery) => {
-                return ctx.origin + this.toWebPath(relativePath, ...pathOrQuery);
-            };
-
-            Object.assign(ctx.state, {
-                _self: ctx.originalUrl || this.toWebPath(ctx.url),
-                __: this.__,
-                _base: ensureRightSlash(this.toWebPath()),
-                _makePath: (relativePath, query) => this.toWebPath(relativePath, query),
-                _makeUrl: (relativePath, query) => ctx.toUrl(relativePath, query)            
-            });
-
-            if (ctx.csrf) {            
-                ctx.state._csrf = ctx.csrf;
-            }
-
-            return action(ctx);
-        };        
     }   
 
     useMiddleware(router, middleware, name) {          

@@ -5,7 +5,7 @@
  * @module Feature_Routing
  */
 
-const { Feature } = require("..").enum;
+const { Feature } = require("..").Enums;
 const { _, eachAsync_ } = require("rk-utils");
 
 module.exports = {

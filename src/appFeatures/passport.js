@@ -7,7 +7,7 @@
 
 const path = require('path');
 const { _, eachAsync_ } = require('rk-utils');
-const { Feature } = require('..').enum;
+const { Feature } = require('..').Enums;
 const { tryRequire } = require('@genx/app/lib/utils/Helpers');
 const KoaPassport = tryRequire('koa-passport').KoaPassport;
 const { InvalidConfiguration } = require('@genx/error');

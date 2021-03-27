@@ -3,6 +3,7 @@
 const { _ } = require('rk-utils');
 const { InvalidConfiguration } = require('@genx/error');
 const Literal = require('../enum/Literal');
+const httpMethod = require('./httpMethod');
 
 exports.requireFeatures = function (features, app, middleware) {
     let hasNotEnabled = _.find(_.castArray(features), feature => !app.enabled(feature));
@@ -15,6 +16,11 @@ exports.requireFeatures = function (features, app, middleware) {
         );
     }
 };
+
+/**
+ * Http method decorator for module controller
+ */
+exports.httpMethod = httpMethod;
 
 exports.hasMethod = function hasMethod(obj, name) {
     const desc = Object.getOwnPropertyDescriptor(obj, name);    

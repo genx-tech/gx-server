@@ -19,8 +19,6 @@ function httpMethod(method, middlewares) {
         }
     
         if (targetFunction) {    
-            console.log(name, method, isHof);
-
             if (typeof method === 'string') {                
                 let pos = method.indexOf(':/');
     

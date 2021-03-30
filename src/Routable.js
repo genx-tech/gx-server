@@ -81,7 +81,7 @@ const Routable = T => class extends T {
         let controllerObj;
 
         try {
-            controllerObj = require(path.join(this.backendPath, controller));
+            controllerObj = require(path.resolve(this.backendPath, controller));
         } catch (error) {
             throw new Error(`Backend controller not found: ${controller}`);
         }       

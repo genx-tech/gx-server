@@ -1,9 +1,6 @@
 "use strict";
 
-const path = require('path');
-const Util = require('rk-utils');
-const _ = Util._;
-const Promise = Util.Promise;
+const { _, text } = require('@genx/july');
 const Router = require('@koa/router');
 const { InvalidConfiguration } = require('@genx/error');
 const Literal = require('../enum/Literal');
@@ -75,7 +72,7 @@ function load_(app, baseRoute, options) {
             methods = {[embeddedMethod]: methods};
         }
 
-        subRoute = Util.ensureLeftSlash(subRoute);
+        subRoute = text.ensureStartsWith(subRoute, '/');
 
         if (typeof methods === 'string' || Array.isArray(methods)) {
             methods = { get: methods };

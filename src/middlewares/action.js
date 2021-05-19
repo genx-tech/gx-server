@@ -5,12 +5,9 @@
  * @module Middleware_Action
  */
 
-const Util = require('rk-utils');
-const _ = Util._;
+const path = require('path');
 const { InvalidConfiguration } = require('@genx/error');
 const Literal = require('../enum/Literal');
-
-const path = require('path');
 
 /**
  * Action middleware creator

@@ -6,7 +6,7 @@
  */
 
 const { Feature } = require("..").Enums;
-const { _, eachAsync_ } = require("rk-utils");
+const { _, eachAsync_ } = require("@genx/july");
 
 module.exports = {
     /**

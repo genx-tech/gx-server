@@ -1,8 +1,8 @@
 "use strict";
 
 const path = require('path');
-const Util = require('rk-utils');
-const _ = Util._;
+const { glob } = require('@genx/sys');
+const { _, naming, text } = require('@genx/july');
 const Literal = require('../enum/Literal');
 const Router = require('@koa/router');
 const { hasMethod } = require('../utils/Helpers');
@@ -48,12 +48,7 @@ module.exports = (app, baseRoute, options) => {
     }
 
     let resourcesPath = path.join(resourcePath, "*.js");
-    let files = Util.glob.sync(resourcesPath, {nodir: true});
-
-    /*
-    if (options.batchQuery) {
-        app.addRoute(router, 'post', options.batchQuery, batchQuery_);
-    }*/
+    let files = glob.sync(resourcesPath, {nodir: true});
 
     _.each(files, file => {
         let entityName = path.basename(file, '.js');
@@ -66,12 +61,12 @@ module.exports = (app, baseRoute, options) => {
         let baseEndpoint;
 
         if (options.remaps && entityName in options.remaps) {
-            baseEndpoint = Util.ensureLeftSlash(Util.trimRightSlash(options.remaps[entityName]));                
+            baseEndpoint = text.ensureStartsWith(text.dropIfEndsWith(options.remaps[entityName], '/'), '/');                
         } else {
-            baseEndpoint = Util.ensureLeftSlash(_.kebabCase(entityName));
+            baseEndpoint = text.ensureStartsWith(naming.kebabCase(entityName), '/');
         }
         
-        let idName = _.camelCase(entityName) + 'Id';
+        let idName = naming.camelCase(entityName) + 'Id';
         let endpointWithId = appendId(baseEndpoint, idName);        
 
         if (hasMethod(controller, 'find')) {            

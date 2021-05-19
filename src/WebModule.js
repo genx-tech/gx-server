@@ -1,7 +1,7 @@
 "use strict";
 
-const { _, ensureLeftSlash, trimRightSlash } = require('rk-utils');
 const path = require('path');
+const { _, text } = require('@genx/july');
 const { ServiceContainer } = require('@genx/app');
 const ModuleBase = require('./ModuleBase');
 const Routable = require('./Routable');
@@ -28,7 +28,7 @@ class WebModule extends ModuleBase(Routable(ServiceContainer)) {
          * Mounting route.
          * @member {string}
          */
-        this.route = ensureLeftSlash(trimRightSlash(route));               
+        this.route = text.ensureStartsWith(text.dropIfEndsWith(route, '/'), '/');               
     }  
 
     /**

@@ -1,7 +1,7 @@
 "use strict";
 
 const path = require('path');
-const { _, eachAsync_ } = require('rk-utils');
+const { _, eachAsync_ } = require('@genx/july');
 const { Runable, ServiceContainer } = require('@genx/app');
 const Routable = require('./Routable');
 const Literal = require('./enum/Literal');

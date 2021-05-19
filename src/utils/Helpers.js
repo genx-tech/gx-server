@@ -1,6 +1,6 @@
 "use strict";
 
-const { _ } = require('rk-utils');
+const { _ } = require('@genx/july');
 const { InvalidConfiguration } = require('@genx/error');
 const Literal = require('../enum/Literal');
 const httpMethod = require('./httpMethod');

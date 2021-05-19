@@ -8,10 +8,8 @@
  */
 
 const path = require('path');
-const { _, urlJoin, ensureLeftSlash } = require('rk-utils');
+const { _, url: urlUtil, text } = require('@genx/july');
 const { Feature } = require('..').Enums;
-const { Helpers: { tryRequire } } = require('@genx/app');
-const SocketServer = tryRequire('socket.io');
 const { InvalidConfiguration } = require('@genx/error');
 
 const DEFAULT_CONTROLLER_PATH = 'events';
@@ -61,6 +59,8 @@ function loadEventHandler(appModule, namespace, controllerBasePath, handlerName,
 }
 
 function startSocketServer(appModule, config) {
+    const SocketServer = appModule.tryRequire('socket.io');
+
     let { port, logger, path: wsPath, ...options } = config;
 
     if (logger && typeof logger === 'string') {
@@ -73,8 +73,8 @@ function startSocketServer(appModule, config) {
 
     let io, standalone = false;
 
-    let endpointPath = wsPath ? urlJoin(appModule.route, wsPath) : appModule.route;
-    endpointPath = ensureLeftSlash(endpointPath);
+    let endpointPath = wsPath ? urlUtil.join(appModule.route, wsPath) : appModule.route;
+    endpointPath = text.ensureStartsWith(endpointPath, '/');
 
     let serviceTag = port ? `socketServer:${port}${endpointPath}` : `socketServer:${endpointPath}`;
 
@@ -122,7 +122,7 @@ function startSocketServer(appModule, config) {
     }        
 
     _.forOwn(config.routes, (info, name) => {
-        name = ensureLeftSlash(name);
+        name = text.ensureStartsWith(name, '/');
 
         let namespaceChannel = io.of(name);
 

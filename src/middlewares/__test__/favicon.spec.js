@@ -2,7 +2,7 @@
 
 const path = require('path');
 const request = require('supertest');
-const Util = require('rk-utils');
+const { fs } = require('@genx/sys');
 const WebServer = require('../../../lib/WebServer');
 
 const WORKING_DIR = path.resolve(__dirname, '../../../test/temp');
@@ -11,10 +11,10 @@ describe('unit:middleware:favicon', function () {
     let webServer;
 
     before(async function () {
-        Util.fs.emptyDirSync(WORKING_DIR);
+        fs.emptyDirSync(WORKING_DIR);
         let publicPath = path.join(WORKING_DIR, 'public');
-        Util.fs.ensureDirSync(publicPath);
-        Util.fs.copyFileSync(path.resolve(__dirname, '../../../test/fixtures/files/favicon.ico'), path.join(publicPath, 'favicon.ico'));
+        fs.ensureDirSync(publicPath);
+        fs.copyFileSync(path.resolve(__dirname, '../../../test/fixtures/files/favicon.ico'), path.join(publicPath, 'favicon.ico'));
 
         webServer = new WebServer('test server', { 
             workingPath: WORKING_DIR
@@ -35,7 +35,7 @@ describe('unit:middleware:favicon', function () {
 
     after(async function () {        
         await webServer.stop_();    
-        Util.fs.removeSync(WORKING_DIR);
+        fs.removeSync(WORKING_DIR);
     });
 
     describe('middleware:favicon', function () {

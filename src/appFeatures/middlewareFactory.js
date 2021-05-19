@@ -26,10 +26,9 @@
  *   },
  */
 
-const { _ } = require('rk-utils');
+const { _ } = require('@genx/july');
 const { Feature } = require('..').Enums;
 const { InvalidConfiguration } = require('@genx/error');
- 
 
 module.exports = {
     /**

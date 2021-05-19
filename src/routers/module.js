@@ -1,7 +1,7 @@
 "use strict";
 
 const path = require('path');
-const { _, urlJoin, ensureLeftSlash } = require('rk-utils');
+const { _, url: urlUtil, text } = require('@genx/july');
 const Literal = require('../enum/Literal');
 const Router = require('@koa/router');
 const { InvalidConfiguration } = require('@genx/error');
@@ -38,7 +38,7 @@ module.exports = function (app, baseRoute, moduleItem) {
         };
     }    
 
-    let currentPrefix = urlJoin(baseRoute, moduleItem.route || '/');
+    let currentPrefix = urlUtil.join(baseRoute, moduleItem.route || '/');
     let router = currentPrefix === '/' ? new Router() : new Router({prefix: currentPrefix});
     
 
@@ -66,7 +66,7 @@ module.exports = function (app, baseRoute, moduleItem) {
             if (typeof action !== 'function') continue;            
 
             let httpMethod = _.castArray(action.__metaHttpMethod || 'get');            
-            let subRoute = ensureLeftSlash(action.__metaRoute || _.kebabCase(actionName));
+            let subRoute = text.ensureStartsWith(action.__metaRoute || _.kebabCase(actionName), '/');
 
             let bindAction;
 

@@ -5,12 +5,10 @@
  * @module Middleware_Favicon
  */
 
-const Util = require('rk-utils');
-const _ = Util._;
-const fs = Util.fs;
+const { _ } = require('@genx/july');
+const { fs } = require('@genx/sys');
 const path = require('path');
-const HttpCode = require('http-status-codes');
-const { InvalidConfiguration } = require('@genx/error');
+const { HttpCode, InvalidConfiguration } = require('@genx/error');
 
 let favicon = (options, app) => {
     if (_.isString(options)) {

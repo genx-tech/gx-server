@@ -1,7 +1,6 @@
 "use strict";
 
 const path = require('path');
-const { Helpers: { tryRequire } } = require('@genx/app');
 const { InvalidConfiguration } = require('@genx/error');
 const Koa = require('koa');
 const mount = require('koa-mount');
@@ -30,7 +29,7 @@ const mount = require('koa-mount');
  *  }
  */
 module.exports = async (app, baseRoute, options) => {
-    const graphqlHTTP = tryRequire('koa-graphql');        
+    const graphqlHTTP = app.tryRequire('koa-graphql');        
 
     const { middlewares, schemaProvider, ...graphqlOpts } = options;
 

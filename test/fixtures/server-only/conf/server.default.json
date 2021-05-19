@@ -19,8 +19,8 @@
     "middlewares": {
         "favicon": "public/favicon.ico",
         "accessLog": { "logger": "accessLog" },
-        "compress": {},
-        "etag": {},        
+        "koa-compress": {},
+        "koa-etag": {},        
         "serveStatic": {}
     }
 }

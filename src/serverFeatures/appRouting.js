@@ -20,12 +20,12 @@
  *  } 
  */
 
-const Feature = require('@genx/app/lib/enum/Feature');
 const path = require('path');
-const Util = require('rk-utils');
-const Promise = Util.Promise;
+const { _, eachAsync_ } = require('@genx/july');
+const { fs } = require('@genx/sys');
 const { InvalidConfiguration } = require('@genx/error');
 const WebModule = require('../WebModule');
+const Feature = require('@genx/app/lib/enum/Feature');
 
 module.exports = {
 
@@ -41,7 +41,7 @@ module.exports = {
      * @param {object} routes - Routes and configuration.
      * @returns {Promise.<*>}
      */
-    load_: async (server, routes) => Util.eachAsync_(routes, async (config, baseRoute) => {
+    load_: async (server, routes) => eachAsync_(routes, async (config, baseRoute) => {
         if (!config.name) {
             throw new InvalidConfiguration(
                 'Missing app name.',
@@ -63,7 +63,7 @@ module.exports = {
             appPath = path.join(server.appModulesPath, config.name);
         }
 
-        let exists = await Util.fs.pathExists(appPath) && (await Util.fs.stat(appPath)).isDirectory();
+        let exists = await fs.pathExists(appPath) && (await fs.stat(appPath)).isDirectory();
         if (!exists) {
             throw new InvalidConfiguration(
                 `App [${config.name}] not exists.`,
@@ -76,15 +76,15 @@ module.exports = {
         app.__ = server.__;
         
         app.on('configLoaded', () => {
-            if (!Util._.isEmpty(config.settings)) {
+            if (!_.isEmpty(config.settings)) {
                 app.config.settings = Object.assign({}, app.config.settings, config.settings);
                 server.log('verbose', `App settings of [${app.name}] is overrided.`);
             }
 
-            if (!Util._.isEmpty(config.middlewares)) {
+            if (!_.isEmpty(config.middlewares)) {
                 let middlewaresToAppend = app.config.middlewares;
                 app.config.middlewares = Object.assign({}, config.middlewares);
-                Util._.defaults(app.config.middlewares, middlewaresToAppend);
+                _.defaults(app.config.middlewares, middlewaresToAppend);
             }
         });
 

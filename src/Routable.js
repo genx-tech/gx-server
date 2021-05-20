@@ -290,6 +290,9 @@ const Routable = T => class extends T {
     addRouter(nestedRouter) {
         this.router.use(nestedRouter.routes());
         this.router.use(nestedRouter.allowedMethods());
+
+        //for debugging all registered routes
+        //console.log(nestedRouter.stack.map(i => i.path));
         return this;
     }
 

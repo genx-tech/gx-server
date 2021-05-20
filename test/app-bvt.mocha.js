@@ -7,7 +7,6 @@
 const path = require('path');
 const request = require('supertest');
 const sh = require('shelljs');
-const Util = require('rk-utils');
 const WebServer = require('../lib/WebServer');
 
 const WORKING_DIR = path.resolve(__dirname, 'fixtures/app-bvt');
@@ -84,7 +83,7 @@ describe('app-bvt', function () {
     describe('router:module with controller decorators', function () {
         it('should return action1', function (done) {
             request(webServer.httpServer)
-                    .get('/test/module2/action1')
+                    .get('/test/module2/action-1')
                     .expect('content-type', 'text/plain; charset=utf-8')
                     .expect('action1')
                     .expect(200)
@@ -103,7 +102,7 @@ describe('app-bvt', function () {
 
         it('should return Hello', function (done) {
             request(webServer.httpServer)
-                    .get('/test/module2/action2')
+                    .get('/test/module2/action-2')
                     .expect('content-type', 'text/plain; charset=utf-8')
                     .expect('Hello')
                     .expect(200)

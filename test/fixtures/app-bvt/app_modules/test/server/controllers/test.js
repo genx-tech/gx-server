@@ -22,5 +22,9 @@ module.exports = {
 
     action2: httpMethod('get', middleware1)(async ctx => {
         ctx.body = ctx.state1;
-    })
+    }),
+
+    action3: async ctx => {
+        ctx.body = ctx.state1;
+    }
 };

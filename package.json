@@ -62,7 +62,7 @@
     "swig-templates": "^2.0.3"
   },
   "dependencies": {
-    "@genx/app": "^2.0.0",
+    "@genx/app": "github:genx-tech/gx-app#v2",
     "@genx/error": "^1.1.1",
     "@genx/july": "^0.2.2",
     "@genx/sys": "^0.1.2",

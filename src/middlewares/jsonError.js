@@ -18,6 +18,10 @@ module.exports = (opt, app) => {
         try {
             await next();
 
+            if (ctx.errorHandled) {
+                return;
+            }
+
             if (ctx.status >= 400) {
                 if (ctx.type === 'text/plain') {
                     ctx.throw(ctx.status, ctx.body);
@@ -33,7 +37,8 @@ module.exports = (opt, app) => {
             if (handler) {      
                 try {                    
                     ctx.body = await handler(ctx, err);     
-                    ctx.app.emit('error', err, ctx);        
+                    ctx.app.emit('error', err, ctx);  
+                    ctx.errorHandled = true;      
                     return;
                 } catch (error) {
                     error.innerError = err;

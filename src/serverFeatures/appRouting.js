@@ -83,7 +83,7 @@ module.exports = {
 
             if (!_.isEmpty(config.middlewares)) {
                 let middlewaresToAppend = app.config.middlewares;
-                app.config.middlewares = Object.assign({}, config.middlewares);
+                app.config.middlewares = { ...config.middlewares };
                 _.defaults(app.config.middlewares, middlewaresToAppend);
             }
         });

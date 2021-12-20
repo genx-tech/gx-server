@@ -66,7 +66,7 @@ module.exports = {
         let exists = await fs.pathExists(appPath) && (await fs.stat(appPath)).isDirectory();
         if (!exists) {
             throw new InvalidConfiguration(
-                `App [${config.name}] not exists.`,
+                `App [${config.name}] not found at ${appPath}`,
                 server,
                 `appRouting.${baseRoute}.name`);
         }
@@ -76,6 +76,11 @@ module.exports = {
         app.__ = server.__;
         
         app.on('configLoaded', () => {
+            if (!_.isEmpty(config.overrides)) {
+                Object.assign(app.config, config.overrides);
+                server.log('verbose', "App config is overrided.");
+            }
+
             if (!_.isEmpty(config.settings)) {
                 app.config.settings = Object.assign({}, app.config.settings, config.settings);
                 server.log('verbose', `App settings of [${app.name}] is overrided.`);

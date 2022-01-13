@@ -5,6 +5,8 @@ const { InvalidConfiguration } = require('@genx/error');
 const Literal = require('../enum/Literal');
 const httpMethod = require('./httpMethod');
 
+exports.Controller = require('./Controller');
+
 exports.requireFeatures = function (features, app, middleware) {
     let hasNotEnabled = _.find(_.castArray(features), feature => !app.enabled(feature));
 

@@ -143,6 +143,15 @@ class WebServer extends Routable(Runable(ServiceContainer)) {
     }
 
     /**
+     * Require a js module from backend path
+     * @param {*} relativePath 
+     */
+    require(relativePath) {
+        let modPath = path.join(this.backendPath, relativePath);
+        return require(modPath);
+    }
+
+    /**
      * Require a module from the source path of an app module
      * @param {*} relativePath 
      */

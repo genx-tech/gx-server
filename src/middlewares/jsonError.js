@@ -16,7 +16,7 @@ module.exports = (opt, app) => {
 
     if (!handler) {
         const apiWrapper = app.getService(app.settings.apiWrapperService || 'apiWrapper');
-        handler = apiWrapper.wrapError;
+        handler = apiWrapper && apiWrapper.wrapError;
     }
 
     return async (ctx, next) => {

@@ -1,8 +1,8 @@
 "use strict";
 
 /**
- * Enable object store feature
- * @module Feature_ObjectStore
+ * Enable middleware factory
+ * @module Feature_MiddlewareFactory
  * 
  * @example
  *   "middlewareFactory": {

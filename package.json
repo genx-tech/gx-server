@@ -77,7 +77,7 @@
     "dependencies": {
         "@genx/app": "github:genx-tech/gx-app#v2",
         "@genx/error": "^1.1.2",
-        "@genx/july": "^0.3.2",
+        "@genx/july": "^1.0.2",
         "@genx/sys": "^0.1.5",
         "@koa/router": "^10.0.0",
         "koa": "^2.11.0",

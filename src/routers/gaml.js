@@ -67,7 +67,7 @@ module.exports = (app, baseRoute, options) => {
         let idName = naming.camelCase(entityName) + "Id";
         let endpointWithId = appendId(baseEndpoint, idName);
 
-       
+       //TODO: need reconsitution
         if (typeof Controller === "function") {
             app.addRoute(router, "get", baseEndpoint, (ctx) => {
                 const controller = new Controller(ctx)
@@ -75,10 +75,6 @@ module.exports = (app, baseRoute, options) => {
                     return controller.find();
                 }
             });
-
-            // if (hasMethod(controller, "post")) {
-            //     app.addRoute(router, "post", baseEndpoint, (ctx) => controller.post(ctx));
-            // }
 
             app.addRoute(router, "post", baseEndpoint, (ctx) => {
                 const controller = new Controller(ctx)
@@ -108,18 +104,6 @@ module.exports = (app, baseRoute, options) => {
                     return controller.deleteById(ctx.params[idName]);
                 }
             });
-
-            // if (hasMethod(Controller, "findById")) {
-            //     app.addRoute(router, "get", endpointWithId, (ctx) => new Controller(ctx).findById(ctx.params[idName]));
-            // }
-
-            // if (hasMethod(Controller, "updateById")) {
-            //     app.addRoute(router, "put", endpointWithId, (ctx) => new Controller(ctx).updateById(ctx.params[idName]));
-            // }
-
-            // if (hasMethod(Controller, "deleteById")) {
-            //     app.addRoute(router, "del", endpointWithId, (ctx) => new Controller(ctx).deleteById(ctx.params[idName]));
-            // }
         }
     });
 

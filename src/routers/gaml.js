@@ -52,11 +52,9 @@ module.exports = (app, baseRoute, options) => {
 
     _.each(files, (file) => {
         let entityName = path.basename(file, ".js");
-        let controller = require(file);
+        let Controller = require(file);
 
-        if (typeof controller === "function") {
-            controller = new controller(app);
-        }
+
 
         let baseEndpoint;
 
@@ -69,24 +67,59 @@ module.exports = (app, baseRoute, options) => {
         let idName = naming.camelCase(entityName) + "Id";
         let endpointWithId = appendId(baseEndpoint, idName);
 
-        if (hasMethod(controller, "find")) {
-            app.addRoute(router, "get", baseEndpoint, (ctx) => controller.find(ctx));
-        }
+       
+        if (typeof Controller === "function") {
+            app.addRoute(router, "get", baseEndpoint, (ctx) => {
+                const controller = new Controller(ctx)
+                if (hasMethod(controller, "find")) {
+                    return controller.find();
+                }
+            });
 
-        if (hasMethod(controller, "post")) {
-            app.addRoute(router, "post", baseEndpoint, (ctx) => controller.post(ctx));
-        }
+            // if (hasMethod(controller, "post")) {
+            //     app.addRoute(router, "post", baseEndpoint, (ctx) => controller.post(ctx));
+            // }
 
-        if (hasMethod(controller, "findById")) {
-            app.addRoute(router, "get", endpointWithId, (ctx) => controller.findById(ctx, ctx.params[idName]));
-        }
+            app.addRoute(router, "post", baseEndpoint, (ctx) => {
+                const controller = new Controller(ctx)
+                if (hasMethod(controller, "post")) {
+                    return controller.post();
+                }
+            });
 
-        if (hasMethod(controller, "updateById")) {
-            app.addRoute(router, "put", endpointWithId, (ctx) => controller.updateById(ctx, ctx.params[idName]));
-        }
 
-        if (hasMethod(controller, "deleteById")) {
-            app.addRoute(router, "del", endpointWithId, (ctx) => controller.deleteById(ctx, ctx.params[idName]));
+            app.addRoute(router, "get", endpointWithId, (ctx) => {
+                const controller = new Controller(ctx)
+                if (hasMethod(controller, "findById")) {
+                    return controller.findById(ctx.params[idName]);
+                }
+            });
+        
+            app.addRoute(router, "put", endpointWithId, (ctx) => {
+                const controller = new Controller(ctx)
+                if (hasMethod(controller, "updateById")) {
+                    return controller.updateById(ctx.params[idName]);
+                }
+            });
+
+            app.addRoute(router, "del", endpointWithId, (ctx) => {
+                const controller = new Controller(ctx)
+                if (hasMethod(controller, "deleteById")) {
+                    return controller.deleteById(ctx.params[idName]);
+                }
+            });
+
+            // if (hasMethod(Controller, "findById")) {
+            //     app.addRoute(router, "get", endpointWithId, (ctx) => new Controller(ctx).findById(ctx.params[idName]));
+            // }
+
+            // if (hasMethod(Controller, "updateById")) {
+            //     app.addRoute(router, "put", endpointWithId, (ctx) => new Controller(ctx).updateById(ctx.params[idName]));
+            // }
+
+            // if (hasMethod(Controller, "deleteById")) {
+            //     app.addRoute(router, "del", endpointWithId, (ctx) => new Controller(ctx).deleteById(ctx.params[idName]));
+            // }
         }
     });
 

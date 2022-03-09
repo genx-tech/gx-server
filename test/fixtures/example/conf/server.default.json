@@ -1,0 +1,38 @@
+{
+    "loggers": {        
+        "accessLog": {
+            "transports": [
+                {
+                    "type": "console",                    
+                    "options": {      
+                        "level": "verbose",                      
+                        "format": "#!jsv: log.format.combine(log.format.colorize(), log.format.simple())"
+                    }
+                }
+            ]
+        }
+    },
+    "timezone": "",
+    "middlewares": [
+        ["favicon", "public/favicon.ico"],
+        "koa-compress",
+        "koa-etag",
+        "koa-body",
+        "koa-override"
+    ],
+    "koa": {
+        "httpPort": 1001
+    },
+    "appRouting": {
+        "/": {
+            "name": "user",
+            "options": {}
+        }
+    
+    },
+    "settings":{
+        "secret":"123",
+        "password":"456"
+    },
+    "apiWrapper": {}
+}

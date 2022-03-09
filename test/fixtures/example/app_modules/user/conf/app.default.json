@@ -1,0 +1,13 @@
+{
+    "timezone": "Etc/UTC",
+    "routing": {
+        "/": {
+            "gaml": {
+                "middlewares": []                
+            },
+            "module": {
+                "controller": []
+            }
+        }
+    }
+}

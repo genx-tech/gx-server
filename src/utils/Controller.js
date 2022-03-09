@@ -1,9 +1,14 @@
-const {  } = require('@genx/error');
+const { } = require('@genx/error');
 
 class Controller {
-    constructor(app) {
-        this.app = app;
-        this.apiWrapper = this.app.getService(this.app.settings.apiWrapperService || 'apiWrapper');
+    constructor(ctx) {
+        this.ctx = ctx;
+
+        this.app = this.ctx.appModule;
+
+        this.config = this.app.server.config;
+
+        this.apiWrapper = this.app.getService(this.config.settings.apiWrapperService || 'apiWrapper');
 
         if (!this.apiWrapper) {
             throw new ApplicationError('"apiWrapper" service is required when using the Controller helper.');
@@ -14,8 +19,8 @@ class Controller {
         return this.app.db(name || this.app.settings.db);
     }
 
-    tryTtlCache(ctx, key) {
-        if (ctx.query['no-cache']) {
+    tryTtlCache(key) {
+        if (this.ctx.query['no-cache']) {
             return false;
         }
 
@@ -26,14 +31,14 @@ class Controller {
 
         const _cache = ttlCache.get(key);
         if (_cache) {
-            this.send(ctx, ..._cache);
+            this.send(this.ctx, ..._cache);
             return true;
         }
         return false;
     }
 
-    send(ctx, result, payload, ttlCacheInfo) {
-        ctx.body = this.apiWrapper.wrapResult(ctx, result, payload);
+    send(result, payload, ttlCacheInfo) {
+        this.ctx.body = this.apiWrapper.wrapResult(this.ctx, result, payload);
         if (ttlCacheInfo) {
             const ttlCache = this.app.getService('ttlMemCache');
             const value = [result];
@@ -42,6 +47,7 @@ class Controller {
             }
             ttlCache.set(ttlCacheInfo.key, [result, payload], ttlCacheInfo.ttl);
         }
+
     }
 
     cache(key, factory) {

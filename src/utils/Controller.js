@@ -14,6 +14,12 @@ class Controller {
         return this.app.db(name || this.app.settings.db);
     }
 
+    /**
+     * Time-to-live cache
+     * @param {*} ctx 
+     * @param {*} key 
+     * @returns 
+     */
     tryTtlCache(ctx, key) {
         if (ctx.query['no-cache']) {
             return false;
@@ -32,6 +38,11 @@ class Controller {
         return false;
     }
 
+    deleteTtlCache(key) {
+        const ttlCache = this.app.getService('ttlMemCache');
+        ttlCache.del(key);
+    }
+
     send(ctx, result, payload, ttlCacheInfo) {
         ctx.body = this.apiWrapper.wrapResult(ctx, result, payload);
         if (ttlCacheInfo) {
@@ -44,6 +55,12 @@ class Controller {
         }
     }
 
+    /**
+     * Immutable cache, suitable for long-term unchanged dictionary data
+     * @param {*} key 
+     * @param {*} factory 
+     * @returns 
+     */
     cache(key, factory) {
         if (!this._cache) {
             this._cache = {};

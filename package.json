@@ -1,6 +1,6 @@
 {
     "name": "@genx/server",
-    "version": "2.0.2",
+    "version": "2.1.0",
     "description": "Gen-X web application framework based on koa for node.js",
     "main": "lib/index.js",
     "publishConfig": {
@@ -71,6 +71,7 @@
         "should": "^13.2.3",
         "socket.io": "^2.2.0",
         "source-map-support": "^0.5.19",
+        "supertest": "^6.2.2",
         "swig-templates": "^2.0.3",
         "winston-mongodb": "^5.0.7"
     },

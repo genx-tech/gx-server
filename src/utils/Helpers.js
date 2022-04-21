@@ -4,6 +4,7 @@ const { _ } = require('@genx/july');
 const { InvalidConfiguration } = require('@genx/error');
 const Literal = require('../enum/Literal');
 const httpMethod = require('./httpMethod');
+const middleware = require('./middleware');
 
 exports.Controller = require('./Controller');
 
@@ -23,6 +24,11 @@ exports.requireFeatures = function (features, app, middleware) {
  * Http method decorator for module controller
  */
 exports.httpMethod = httpMethod;
+
+/**
+ * Middleware decorator for controller
+ */
+ exports.middleware = middleware;
 
 exports.hasMethod = function hasMethod(obj, name) {
     const desc = Object.getOwnPropertyDescriptor(obj, name);    

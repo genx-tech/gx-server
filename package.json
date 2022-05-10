@@ -95,7 +95,7 @@
         "koa-session-memory": "^1.0.2",
         "koa-static": "^5.0.0",
         "koa-views": "^6.2.1",
-        "validator": "^12.1.0"
+        "validator": "^13.7.0"
     },
     "gitHead": "fa2e20a52c6b32955038685358fe5e45a4119734"
 }

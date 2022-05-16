@@ -3,7 +3,7 @@ const {  } = require('@genx/error');
 class Controller {
     constructor(app) {
         this.app = app;
-        this.apiWrapper = this.app.getService(this.app.settings.apiWrapperService || 'apiWrapper');
+        this.apiWrapper = this.app.getService(this.app.settings?.apiWrapperService || 'apiWrapper');
 
         if (!this.apiWrapper) {
             throw new ApplicationError('"apiWrapper" service is required when using the Controller helper.');

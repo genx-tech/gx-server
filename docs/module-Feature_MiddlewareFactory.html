@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>@genx/server Module: Middleware_FlashMessage</title>
+	<title>@genx/server Module: Feature_MiddlewareFactory</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -88,14 +88,10 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
 		<div id="main">
 			
 
-	<h1 class="page-title">Module: Middleware_FlashMessage</h1>
+	<h1 class="page-title">Module: Feature_MiddlewareFactory</h1>
 <section>
 
 <header>
-    
-        
-            
-        
     
 </header>
 
@@ -104,34 +100,121 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
     <div class="container-overview">
     
         
+            <div class="description"><p>Enable middleware factory</p></div>
+        
 
         
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		appFeatures/middlewareFactory.js
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+        
+            <h3>Example</h3>
+            
+    <pre class="sunlight-highlight-javascript">&quot;middlewareFactory&quot;: {
+      //new middleware name
+      &quot;listOfMiddleware&quot;: {
+          &quot;middleware1&quot;: { // options
+              ...
+          },
+          &quot;middleware2&quot;: { // options
+              ...
+          }
+      },
+       &quot;altListOfMiddleware&quot;: [
+          {
+              &quot;name&quot;: &quot;middleware1&quot;,
+              &quot;options&quot;: { ... } 
+          },
+          [ &quot;middleware2&quot;, { ... } ],
+          &quot;middleware3&quot;
+      ]
+  },</pre>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        <dl>
             
 <hr>
-<dt>
-    <h4 class="name" id="module:Middleware_FlashMessage"><span class="type-signature"></span>(require("Middleware_FlashMessage"))()</h4>
-    
+<dt class="name" id=".type">
+    <h4 id=".type"><span class="type-signature">&lt;static> </span>type<span class="type-signature"> :string</span></h4>
+
     
 </dt>
 <dd>
-
     
     <div class="description">
-        <p>add message to flash messages</p>
-<p>ctx.flashMessage.warning = 'Log Out Successfully!';</p>
-<p>read all flash messages</p>
-<p>ctx.state.flashMessage.messages<br>
-// or ctx.flashMessage.messages</p>
-<p>read warning message</p>
-<p>ctx.state.flashMessage.warning</p>
+        <p>This feature is loaded at init stage</p>
     </div>
     
 
     
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">string</span>
 
-    
 
-    
+
+            </li>
+        </ul>
     
 
     
@@ -167,7 +250,158 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
 	
 	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
 	<dd class="tag-source">
-		middlewares/flashMessage.js
+		appFeatures/middlewareFactory.js
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        </dl>
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<hr>
+<dt>
+    <h4 class="name" id=".load_"><span class="type-signature">&lt;static> </span>load_(app, factories)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Load the feature</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>app</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">App</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The app module object</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>factories</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Object factories</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		appFeatures/middlewareFactory.js
 	</dd>
 	
 
@@ -190,26 +424,31 @@ middleware: (packet, next) =></a></li><li><a href="module-Feature_Acl.html">Feat
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;*></span>
+
+
+
+    </dd>
+</dl>
+
+
+        
 
     
 </dd>
 
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
+        </dl>
     
 
     

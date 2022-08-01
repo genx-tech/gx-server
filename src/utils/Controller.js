@@ -15,10 +15,10 @@ class Controller {
     }
 
     /**
-     * Time-to-live cache
+     * Try to send back data from time-to-live cache
      * @param {*} ctx 
      * @param {*} key 
-     * @returns 
+     * @returns {boolean} 
      */
     tryTtlCache(ctx, key) {
         if (ctx.query['no-cache']) {
@@ -59,7 +59,7 @@ class Controller {
      * Immutable cache, suitable for long-term unchanged dictionary data
      * @param {*} key 
      * @param {*} factory 
-     * @returns 
+     * @returns {object}
      */
     cache(key, factory) {
         if (!this._cache) {

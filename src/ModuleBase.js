@@ -48,6 +48,15 @@ const ModuleBase = Base => class extends Base {
     }    
 
     /**
+     * Check whether a feature is enabled in the app or its hosting server.
+     * @param {string} feature
+     * @returns {bool}
+     */
+     enabled(feature, currentModuleOnly) {
+        return super.enabled(feature) || (!currentModuleOnly && this.server.enabled(feature));
+    }
+
+    /**
      * Require a js module from backend path
      * @param {*} relativePath 
      */

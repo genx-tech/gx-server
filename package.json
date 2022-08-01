@@ -76,10 +76,10 @@
         "winston-mongodb": "^5.0.7"
     },
     "dependencies": {
-        "@genx/app": "github:genx-tech/gx-app#v2",
+        "@genx/app": "^2.0.4",
         "@genx/error": "^1.1.2",
-        "@genx/july": "^1.0.2",
-        "@genx/sys": "^0.1.5",
+        "@genx/july": "^1.1.1",
+        "@genx/sys": "^0.1.6",
         "@koa/router": "^10.0.0",
         "koa": "^2.11.0",
         "koa-body": "^4.1.1",

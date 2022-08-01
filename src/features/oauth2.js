@@ -6,8 +6,8 @@
  */
 
 const path = require('path');
-const { Feature } = require('..').enum;
-const { tryRequire, dependsOn } = require('@genx/app/lib/utils/Helpers');
+const { Feature } = require('..').Enums;
+const { dependsOn } = require('@genx/app/lib/utils/Helpers');
 
 module.exports = {
 
@@ -39,7 +39,7 @@ module.exports = {
         /**
          * Module dependencies.
          */        
-        const oauth2orize = tryRequire('oauth2orize-koa');        
+        const oauth2orize = app.tryRequire('oauth2orize-koa');        
 
         // create OAuth 2.0 server
         const server = oauth2orize.createServer();        

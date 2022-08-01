@@ -2,71 +2,75 @@
 
 const path = require('path');
 const request = require('supertest');
-const Util = require('rk-utils');
+const { fs } = require('@genx/sys');
 const WebServer = require('../../WebServer');
 
 const WORKING_DIR = path.resolve(__dirname, '../../../test/temp');
 
 let resourceBook = `
-const Util = require('rk-utils');
+const { _ } = require('@genx/july');
 
 let books = [ { id: 1, title: 'Book 1' }, { id: 2, title: 'Book 2' } ];
 let maxid = 2;
 
-exports.query = (ctx) => {
-    ctx.body = books;
-};
+class Controller {
+    async find(ctx) {
+        ctx.body = books;
+    };
 
-exports.create = (ctx) => {
-    let newBook = {id: ++maxid, title: ctx.request.body.title};
-    books.push(newBook);
-    ctx.body = newBook;
-};
+    async post(ctx) {
+        let newBook = {id: ++maxid, title: ctx.request.body.title};
+        books.push(newBook);
+        ctx.body = newBook;
+    };
 
-exports.detail = (ctx) => {
-    let id = ctx.params.id;
-    ctx.body =  Util._.find(books, book => book.id == id) || {};
-};
+    async findById(ctx, id) {
+        ctx.body =  _.find(books, book => book.id == id) || {};
+    };
 
-exports.update = (ctx) => {
-    let id = ctx.params.id;
-    let bookFound = Util._.find(books, book => book.id == id);
+    async updateById(ctx, id) {
+        let bookFound = _.find(books, book => book.id == id);
 
-    bookFound.title = ctx.request.body.title;
-    ctx.body =  bookFound;
-};
+        bookFound.title = ctx.request.body.title;
+        ctx.body =  bookFound;
+    };
 
-exports.remove = (ctx) => {
-    let id = ctx.params.id;
-    let idx = Util._.findIndex(books, book => book.id == id);
-    ctx.body = books.splice(idx, 1)[0];
-};
+    async deleteById(ctx, id) {
+        let idx = _.findIndex(books, book => book.id == id);
+        ctx.body = books.splice(idx, 1)[0];
+    };
+}
+
+module.exports = Controller;
 `;
 
-describe('unit:router:rest', function () {
+describe('unit:router:gaml-class', function () {
     let webServer;
 
     before(async function () {
-        Util.fs.emptyDirSync(WORKING_DIR);
+        fs.emptyDirSync(WORKING_DIR);
         let resourcesPath = path.join(WORKING_DIR, 'server', 'resources');
-        Util.fs.ensureDirSync(resourcesPath);
-        Util.fs.writeFileSync(path.join(resourcesPath, 'book.js'), resourceBook);
+        fs.ensureDirSync(resourcesPath);
+        fs.writeFileSync(path.join(resourcesPath, 'book.js'), resourceBook);
 
         webServer = new WebServer('test server', {
-            workingPath: WORKING_DIR
+            workingPath: WORKING_DIR,
+            logger: {
+                level: 'verbose'
+            }
         });
 
         webServer.once('configLoaded', () => {
             webServer.config = {
                 "koa": {
                 },
-                "middlewares": {
-                    "bodyParser": {},
-                    "methodOverride": {}
-                },
+                "middlewares": [
+                    "koa-body",
+                    "koa-override"
+                ],
                 "routing": {
                     "/api": {
-                        "simpleRest": {}
+                        "gaml": {}
                     }
                 }
             };
@@ -77,10 +81,10 @@ describe('unit:router:rest', function () {
 
     after(async function () {
         await webServer.stop_();
-        Util.fs.removeSync(WORKING_DIR);
+        fs.removeSync(WORKING_DIR);
     });
 
-    describe('module function', function () {
+    describe('class function', function () {
         it('should get a list of books', function (done) {
             request(webServer.httpServer)
                 .get('/api/book')

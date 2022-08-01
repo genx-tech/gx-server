@@ -14,9 +14,18 @@ module.exports = (opt, app) => {
         handler = app.getBackendAction(opt.customHandler);
     }
 
+    if (!handler) {
+        const apiWrapper = app.getService(app.settings?.apiWrapperService || 'apiWrapper');
+        handler = apiWrapper && apiWrapper.wrapError;
+    }
+
     return async (ctx, next) => {
         try {
             await next();
+
+            if (ctx.errorHandled) {
+                return;
+            }
 
             if (ctx.status >= 400) {
                 if (ctx.type === 'text/plain') {
@@ -33,7 +42,8 @@ module.exports = (opt, app) => {
             if (handler) {      
                 try {                    
                     ctx.body = await handler(ctx, err);     
-                    ctx.app.emit('error', err, ctx);        
+                    ctx.app.emit('error', err, ctx);  
+                    ctx.errorHandled = true;      
                     return;
                 } catch (error) {
                     error.innerError = err;

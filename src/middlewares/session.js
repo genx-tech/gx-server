@@ -6,8 +6,7 @@
  */
 
 const session = require('koa-session');
-const { InvalidConfiguration } = require('../utils/Errors');
-const { tryRequire } = require('@genx/app/lib/utils/Helpers');
+const { InvalidConfiguration } = require('@genx/error');
 
 const DEFAULT_OPTS = {
     key: 'k-server.sid',
@@ -55,23 +54,23 @@ module.exports = (options, app) => {
 
     switch (store.type) {
         case 'redis':
-            storeObject = tryRequire('koa-redis')(opt);
+            storeObject = app.tryRequire('koa-redis')(opt);
             break;
         case 'mysql':
-            storeObject = tryRequire('koa-mysql-session')(opt);
+            storeObject = app.tryRequire('koa-mysql-session')(opt);
             break;
         case 'mongodb':
-            const MongoStore = tryRequire('koa-generic-session-mongo');
+            const MongoStore = app.tryRequire('koa-generic-session-mongo');
             storeObject = new MongoStore(opt);
             break;
         case 'pgsql':
-            storeObject = tryRequire('koa-pg-session')(opt);
+            storeObject = app.tryRequire('koa-pg-session')(opt);
             break;
         case 'sqlite3':
-            storeObject = tryRequire('koa-sqlite3-session')(opt);
+            storeObject = app.tryRequire('koa-sqlite3-session')(opt);
             break;
         case 'memory':
-            const MemoryStore = tryRequire('koa-session-memory');
+            const MemoryStore = app.tryRequire('koa-session-memory');
             storeObject = new MemoryStore();
             break;
         default:

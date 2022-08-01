@@ -6,8 +6,8 @@
  */
 
 const path = require('path');
-const { Literal } = require('..').enum;
-const { InvalidConfiguration } = require('../utils/Errors');
+const Literal = require('../enum/Literal');
+const { InvalidConfiguration } = require('@genx/error');
 
 /**
  * @function

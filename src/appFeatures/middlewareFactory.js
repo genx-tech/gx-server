@@ -1,8 +1,8 @@
 "use strict";
 
 /**
- * Enable object store feature
- * @module Feature_ObjectStore
+ * Enable middleware factory
+ * @module Feature_MiddlewareFactory
  * 
  * @example
  *   "middlewareFactory": {
@@ -26,10 +26,9 @@
  *   },
  */
 
-const { _ } = require('rk-utils');
-const { Feature } = require('..').enum;
-const { InvalidConfiguration } = require('../utils/Errors');
- 
+const { _ } = require('@genx/july');
+const { Feature } = require('..').Enums;
+const { InvalidConfiguration } = require('@genx/error');
 
 module.exports = {
     /**

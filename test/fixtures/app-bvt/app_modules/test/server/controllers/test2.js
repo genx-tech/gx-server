@@ -1,25 +1,25 @@
 "use strict";
 
-const { http, Controller } = require('../../../../../../../lib');
+const { Helpers: { httpMethod } } = require('../../../../../../../lib');
 
 async function middleware1(ctx, next) {    
     ctx.state1 = 'Hello';
     return next();
 }
 
-class Module2Controller extends Controller {
+class Module2Controller {
 
-    @http('get')
+    @httpMethod('get')
     async action1(ctx) {
         ctx.body = 'action1';
     }
 
-    @http('post:/action1')
+    @httpMethod('post:/action1')
     async post(ctx) {
         ctx.body = 'you post: ' + ctx.request.body.name;
     }
 
-    @http('get', middleware1)
+    @httpMethod('get', middleware1)
     async action2(ctx) {
         ctx.body = ctx.state1;
     }

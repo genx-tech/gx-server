@@ -6,11 +6,9 @@
  */
 
 const path = require('path');
-const { _, eachAsync_ } = require('rk-utils');
-const { Feature } = require('..').enum;
-const { tryRequire } = require('@genx/app/lib/utils/Helpers');
-const KoaPassport = tryRequire('koa-passport').KoaPassport;
-const { InvalidConfiguration } = require('../utils/Errors');
+const { _, eachAsync_ } = require('@genx/july');
+const { Feature } = require('..').Enums;
+const { InvalidConfiguration } = require('@genx/error');
 
 module.exports = {
 
@@ -34,6 +32,7 @@ module.exports = {
      * @returns {Promise.<*>}
      */
     load_: function (app, config) {
+        const KoaPassport = app.tryRequire('koa-passport').KoaPassport;
         let passport = new KoaPassport();
         if (_.isEmpty(config) || _.isEmpty(config.strategies)) {
             throw new InvalidConfiguration(

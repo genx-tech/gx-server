@@ -5,8 +5,8 @@
  * @module Feature_Routing
  */
 
-const { Feature } = require("..").enum;
-const { _, eachAsync_ } = require("rk-utils");
+const { Feature } = require("..").Enums;
+const { _, eachAsync_ } = require("@genx/july");
 
 module.exports = {
     /**

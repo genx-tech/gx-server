@@ -1,9 +1,9 @@
 "use strict";
 
 const path = require('path');
-const { _, fs, glob, urlJoin, ensureLeftSlash, ensureRightSlash, urlAppendQuery } = require('rk-utils');
-const { Helpers: { tryRequire } } = require('@genx/app');
-const Errors = require('./utils/Errors');
+const { fs, glob } = require('@genx/sys');
+const { _, url: urlUtil, text } = require('@genx/july');
+const { ApplicationError, InvalidConfiguration } = require('@genx/error');
 const Literal = require('./enum/Literal');
 const Koa = require('koa');
 const mount = require('koa-mount');
@@ -81,7 +81,7 @@ const Routable = T => class extends T {
         let controllerObj;
 
         try {
-            controllerObj = require(path.join(this.backendPath, controller));
+            controllerObj = require(path.resolve(this.backendPath, controller));
         } catch (error) {
             throw new Error(`Backend controller not found: ${controller}`);
         }       
@@ -112,7 +112,7 @@ const Routable = T => class extends T {
         pre: typeof factoryMethod === 'function', 'Invalid middleware factory: ' + name;        
 
         if (name in this.middlewareFactoryRegistry) {
-            throw new Errors.ServerError('Middleware "'+ name +'" already registered!');
+            throw new ApplicationError('Middleware "'+ name +'" already registered!');
         }
 
         this.middlewareFactoryRegistry[name] = factoryMethod;
@@ -133,12 +133,12 @@ const Routable = T => class extends T {
             return this.server.getMiddlewareFactory(name);
         }
 
-        let npmMiddleware = tryRequire(name);
+        let npmMiddleware = this.tryRequire(name);
         if (npmMiddleware) {
             return npmMiddleware;
         }
 
-        throw new Errors.ServerError(`Don't know where to load middleware "${name}".`);
+        throw new ApplicationError(`Don't know where to load middleware "${name}".`);
     }
 
     /**
@@ -173,7 +173,7 @@ const Routable = T => class extends T {
                 } else if (Array.isArray(middlewareEntry)) {
                     // [ [ 'namedMiddleware', config ] ]
                     if (middlewareEntry.length === 0) {
-                        throw new Errors.InvalidConfiguration(
+                        throw new InvalidConfiguration(
                             'Empty array found as middleware entry!',
                             this,
                             'middlewares'
@@ -185,7 +185,7 @@ const Routable = T => class extends T {
                     middlewareFunctions.push({ name: middlewareEntry[0], middleware });
                 } else {
                     if (!_.isPlainObject(middlewareEntry) || !('name' in middlewareEntry)) {
-                        throw new Errors.InvalidConfiguration(
+                        throw new InvalidConfiguration(
                             'Invalid middleware entry!',
                             this,
                             'middlewares'
@@ -276,7 +276,7 @@ const Routable = T => class extends T {
 
         router[method](route, ...handlers);
 
-        let endpoint = router.opts.prefix ? urlJoin(this.route, router.opts.prefix, route) : urlJoin(this.route, route);
+        let endpoint = router.opts.prefix ? urlUtil.join(this.route, router.opts.prefix, route) : urlUtil.join(this.route, route);
 
         this.log('verbose', `Route "${method}:${endpoint}" is added from module [${this.name}].`);
 
@@ -290,6 +290,9 @@ const Routable = T => class extends T {
     addRouter(nestedRouter) {
         this.router.use(nestedRouter.routes());
         this.router.use(nestedRouter.allowedMethods());
+
+        //for debugging all registered routes
+        //console.log(nestedRouter.stack.map(i => i.path));
         return this;
     }
 
@@ -316,47 +319,19 @@ const Routable = T => class extends T {
                 query = pathOrQuery.pop();
             }
             pathOrQuery.unshift(relativePath);
-            url = urlJoin(this.route, ...pathOrQuery);
+            url = urlUtil.join(this.route, ...pathOrQuery);
         } else {
-            url = urlJoin(this.route, relativePath);
+            url = urlUtil.join(this.route, relativePath);
         }
 
-        url = ensureLeftSlash(url);
+        url = text.ensureStartsWith(url, '/');
 
         if (query) {
-            url = urlAppendQuery(url, query);
+            url = urlUtil.appendQuery(url, query);
             url = url.replace('/?', '?');
         }
 
         return url;
-    }    
-
-    /**
-     * Prepare context for koa action
-     * @param {Object} ctx - Koa request context
-     * @param {function} action - Action function
-     * @return {function}
-     */
-    wrapAction(action) {
-        return async (ctx) => {
-            ctx.toUrl = (relativePath, ...pathOrQuery) => {
-                return ctx.origin + this.toWebPath(relativePath, ...pathOrQuery);
-            };
-
-            Object.assign(ctx.state, {
-                _self: ctx.originalUrl || this.toWebPath(ctx.url),
-                __: this.__,
-                _base: ensureRightSlash(this.toWebPath()),
-                _makePath: (relativePath, query) => this.toWebPath(relativePath, query),
-                _makeUrl: (relativePath, query) => ctx.toUrl(relativePath, query)            
-            });
-
-            if (ctx.csrf) {            
-                ctx.state._csrf = ctx.csrf;
-            }
-
-            return action(ctx);
-        };        
     }   
 
     useMiddleware(router, middleware, name) {          

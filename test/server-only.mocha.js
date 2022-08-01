@@ -7,7 +7,6 @@
 const path = require('path');
 const request = require('supertest');
 const sh = require('shelljs');
-const Util = require('rk-utils');
 const WebServer = require('../lib/WebServer');
 
 const WORKING_DIR = path.resolve(__dirname, 'fixtures/server-only');

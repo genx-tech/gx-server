@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const Util = require('rk-utils');
+const { fs } = require('@genx/sys');
 const WebServer = require('../../../src/WebServer');
 
 const WORKING_DIR = path.resolve(__dirname, '../../../test/temp');
@@ -12,11 +12,11 @@ describe('unit:features:socketServer', function () {
     let webServer;
 
     before(async function () {
-        Util.fs.emptyDirSync(WORKING_DIR);
+        fs.emptyDirSync(WORKING_DIR);
         let controllerPath = path.join(WORKING_DIR, 'server/events');
-        Util.fs.ensureDirSync(controllerPath);
-        Util.fs.copyFileSync(path.resolve(__dirname, '../../../test/fixtures/files/heartbeat.js'), path.join(controllerPath, 'heartbeat.js'));
-        Util.fs.copyFileSync(path.resolve(__dirname, '../../../test/fixtures/files/welcome.js'), path.join(controllerPath, 'welcome.js'));
+        fs.ensureDirSync(controllerPath);
+        fs.copyFileSync(path.resolve(__dirname, '../../../test/fixtures/files/heartbeat.js'), path.join(controllerPath, 'heartbeat.js'));
+        fs.copyFileSync(path.resolve(__dirname, '../../../test/fixtures/files/welcome.js'), path.join(controllerPath, 'welcome.js'));
 
         webServer = new WebServer('test server', { 
             workingPath: WORKING_DIR
@@ -43,7 +43,7 @@ describe('unit:features:socketServer', function () {
 
     after(async function () {        
         await webServer.stop_();    
-        Util.fs.removeSync(WORKING_DIR);
+        fs.removeSync(WORKING_DIR);
     });
 
     describe('handshake', function () {

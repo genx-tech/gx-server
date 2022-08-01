@@ -5,12 +5,9 @@
  * @module Middleware_Action
  */
 
-const Util = require('rk-utils');
-const _ = Util._;
-const { InvalidConfiguration } = require('../utils/Errors');
-const Literal = require('../enum/Literal');
-
 const path = require('path');
+const { InvalidConfiguration } = require('@genx/error');
+const Literal = require('../enum/Literal');
 
 /**
  * Action middleware creator
@@ -42,12 +39,12 @@ module.exports = (controllerAction, app) => {
             throw new InvalidConfiguration(`${controllerAction} does not contain a valid action in returned middleware chain.`, app);
         }    
 
-        return actioner.concat(app.wrapAction(actionFunction));
+        return actioner.concat(actionFunction);
     } 
 
     if (typeof actioner !== 'function') {
         throw new InvalidConfiguration(`${controllerAction} is not a valid action.`, app);
     }    
 
-    return app.wrapAction(actioner);
+    return actioner;
 };

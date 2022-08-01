@@ -5,8 +5,7 @@
  * @module Middleware_AccessLog
  */
 
-const Util = require('rk-utils');
-const { InvalidConfiguration } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
 const { requireFeatures } = require('../utils/Helpers');
 const HttpStatus = require('http-status-codes');
 

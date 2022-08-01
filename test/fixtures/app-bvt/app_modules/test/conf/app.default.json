@@ -1,8 +1,8 @@
 {
     "middlewares": {
         "serveStatic": {},
-        "bodyParser": {},
-        "methodOverride": {}
+        "koa-body": {},
+        "koa-override": {}
     },
     "routing": {
         "/": {
@@ -27,7 +27,7 @@
             "module": "test2"
         },
         "/api": {
-            "simpleRest": {}
+            "rest": {}
         }
     }
 }

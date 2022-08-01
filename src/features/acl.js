@@ -5,12 +5,9 @@
  * @module Feature_Acl
  */
 
-const path = require('path');
-const { _, eachAsync_ } = require('rk-utils');
-const { Feature } = require('..').enum;
-const { tryRequire } = require('@genx/app/lib/utils/Helpers');
-const Acl = tryRequire('acl');
-const { InvalidConfiguration } = require('../utils/Errors');
+const { _, eachAsync_ } = require('@genx/july');
+const { Feature } = require('..').Enums;
+const { InvalidConfiguration } = require('@genx/error');
 
 module.exports = {
 
@@ -36,6 +33,7 @@ module.exports = {
      * }
      */
     load_: async function (app, config) {
+        const Acl = app.tryRequire('acl');
         let backend = config.backend || 'memory';
         let backendType, backendStore;
 

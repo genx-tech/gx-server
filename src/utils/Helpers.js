@@ -1,8 +1,12 @@
 "use strict";
 
-const { _, hasKeyByPath, getValueByPath } = require('rk-utils');
-const { InvalidConfiguration, BadRequest } = require('../utils/Errors');
+const { _ } = require('@genx/july');
+const { InvalidConfiguration } = require('@genx/error');
 const Literal = require('../enum/Literal');
+const httpMethod = require('./httpMethod');
+const middleware = require('./middleware');
+
+exports.Controller = require('./Controller');
 
 exports.requireFeatures = function (features, app, middleware) {
     let hasNotEnabled = _.find(_.castArray(features), feature => !app.enabled(feature));
@@ -16,6 +20,16 @@ exports.requireFeatures = function (features, app, middleware) {
     }
 };
 
+/**
+ * Http method decorator for module controller
+ */
+exports.httpMethod = httpMethod;
+
+/**
+ * Middleware decorator for controller
+ */
+ exports.middleware = middleware;
+
 exports.hasMethod = function hasMethod(obj, name) {
     const desc = Object.getOwnPropertyDescriptor(obj, name);    
     let has = !!desc && typeof desc.value === 'function';
@@ -26,45 +40,6 @@ exports.hasMethod = function hasMethod(obj, name) {
 
     return hasMethod(proto, name);
 };
-
-exports.getValueFromCtx = (ctx, name, type, optional, defaultValue, sources) => {
-    sources ?? (sources = ctx.method === 'GET' ? 
-        ['query'] : 
-        ((type.name === 'binary' || type.name === 'object') ? 
-            ['body'] : 
-            ['query', 'body']));
-
-    let keyPath;
-    let source = _.find(sources, source => {
-        keyPath = source + '.' + name;
-        return hasKeyByPath(ctx.request, keyPath) ;        
-    });
-
-    if (!source) {
-        if (optional) return defaultValue;
-        throw new BadRequest(`"${name}" is required.`);
-    }
-
-    let value = getValueByPath(ctx.request, keyPath);
-    if (_.isNil(value)) {
-        return value;
-    }
-
-    return type.sanitize(value);
-};
-
-exports.expectToBeOneOf = (name, value, list, forceTo) => {
-    (list instanceof Set) || (list = new Set(list));
-    if (!list.has(value)) {
-        if (!_.isNil(forceTo)) {
-            return forceTo;
-        }
-
-        throw new BadRequest(`Value of "${name}" should be one of [${Array.from(list).join(', ')}].`);
-    }
-
-    return value;
-}
 
 /**
  * when running with [NODE_RT=babel], directly use source files

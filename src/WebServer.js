@@ -1,7 +1,7 @@
 "use strict";
 
 const path = require('path');
-const { _, eachAsync_ } = require('rk-utils');
+const { _, eachAsync_ } = require('@genx/july');
 const { Runable, ServiceContainer } = require('@genx/app');
 const Routable = require('./Routable');
 const Literal = require('./enum/Literal');
@@ -140,6 +140,15 @@ class WebServer extends Routable(Runable(ServiceContainer)) {
      */
     getAppByAlias(a) {
         return this.appModulesByAlias[a];
+    }
+
+    /**
+     * Require a js module from backend path
+     * @param {*} relativePath 
+     */
+    require(relativePath) {
+        let modPath = path.join(this.backendPath, relativePath);
+        return require(modPath);
     }
 
     /**

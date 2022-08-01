@@ -1,6 +1,6 @@
-const path = require('path');
-const { _, fs, Promise, replaceAll, ensureRightSlash, trimLeftSlash } = require('rk-utils');
-const { Helpers: { tryRequire } } = require('@genx/app');
+const path = require("path");
+const { fs } = require("@genx/sys");
+const { _, text } = require("@genx/july");
 
 /**
  * Markdown middleware.
@@ -11,28 +11,28 @@ const cachePages = {};
 let cacheLayout;
 
 const defaultOpts = {
-  cache: false,
-  titleHolder: '{{TITLE}}',
-  bodyHolder: '{{BODY}}',
-  indexName: 'index',
-  baseUrl: '/'
+    cache: false,
+    titleHolder: "{{TITLE}}",
+    bodyHolder: "{{BODY}}",
+    indexName: "index",
+    baseUrl: "/",
 };
 
 module.exports = function (options, app) {
-  assert: options && options.root, 'options.root required';
+    assert: options && options.root, "options.root required";
 
-  _.defaults(options, defaultOpts);
+    _.defaults(options, defaultOpts);
 
-  options.baseUrl = ensureRightSlash(trimLeftSlash(options.baseUrl));
-  options.layout = options.layout || path.join(options.root, 'layout.html');
+    options.baseUrl = text.ensureEndsWith(text.dropIfStartsWith(options.baseUrl, '/'), '/');
+    options.layout = options.layout || path.join(options.root, "layout.html");
 
-  // support custom markdown render
-  if (typeof options.render !== 'function') {
-    let md = tryRequire('markdown-it')(options.mdOptions);
-    options.render = content => md.render(content);
-  }
+    // support custom markdown render
+    if (typeof options.render !== "function") {
+        let md = app.tryRequire("markdown-it")(options.mdOptions);
+        options.render = (content) => md.render(content);
+    }
 
-  const defaultLayout = `
+    const defaultLayout = `
 <!DOCTYPE html>
 <html>
   <head>
@@ -56,73 +56,75 @@ module.exports = function (options, app) {
 </html>
 `;
 
-  return async (ctx, next) => {
-    if (ctx.method !== 'GET') {
-      return next();
-    }
+    return async (ctx, next) => {
+        if (ctx.method !== "GET") {
+            return next();
+        }
 
-    let pathname = trimLeftSlash(ctx.path);
-    // get md file path
+        let pathname = text.dropIfStartsWith(ctx.path, '/');
+        // get md file path
 
-    // index file
-    if (pathname + '/' === options.baseUrl
-      || pathname === options.baseUrl) {
-      pathname = options.baseUrl + options.indexName;
-    } else if (!pathname.startsWith(options.baseUrl)) {
-        return next();
-    }
+        // index file
+        if (pathname + "/" === options.baseUrl || pathname === options.baseUrl) {
+            pathname = options.baseUrl + options.indexName;
+        } else if (!pathname.startsWith(options.baseUrl)) {
+            return next();
+        }
 
-    pathname = pathname.substr(options.baseUrl.length);    
-    pathname = path.join(options.root, pathname + '.md');
+        pathname = pathname.substr(options.baseUrl.length);
+        pathname = path.join(options.root, pathname + ".md");
 
-    // generate html
-    let html = await getPage(pathname);
-    if (html === null) {  
-      return next();
-    }
-    ctx.type = 'html';
-    ctx.body = html;
-  };
-
-  async function getPage(filepath) {      
-    if (options.cache && filepath in cachePages) {
-      return cachePages[filepath];
-    }
-    let r;
-    try {
-      r = await Promise.all([getLayout(), getContent(filepath)]);
-    } catch (err) {
-      if (err.code === 'ENOENT') {
-        return null;
-      }
-      throw err;
-    }
-
-    let layout = r[0];
-    let content = r[1];
-    let html = replaceAll(layout, options.titleHolder, content.title);
-    html = replaceAll(html, options.bodyHolder, content.body);
-
-    if (options.cache) {
-      cachePages[filepath] = html;
-    }
-    return html;
-  }
-
-  async function getLayout() {
-    if (options.cache && cacheLayout) return cacheLayout;
-    let layout = (await fs.exists(options.layout)) ? (await fs.readFile(options.layout, 'utf8')) : defaultLayout;
-    if (options.cache) cacheLayout = layout;
-    return layout;
-  }
-
-  async function getContent(filepath) {
-    let content = await fs.readFile(filepath, 'utf8');
-    let title = content.slice(0, content.indexOf('\n')).trim().replace(/^[#\s]+/, '');
-    let body = options.render(content);
-    return {
-      title: title,
-      body: body
+        // generate html
+        let html = await getPage(pathname);
+        if (html === null) {
+            return next();
+        }
+        ctx.type = "html";
+        ctx.body = html;
     };
-  }
+
+    async function getPage(filepath) {
+        if (options.cache && filepath in cachePages) {
+            return cachePages[filepath];
+        }
+        let r;
+        try {
+            r = await Promise.all([getLayout(), getContent(filepath)]);
+        } catch (err) {
+            if (err.code === "ENOENT") {
+                return null;
+            }
+            throw err;
+        }
+
+        let layout = r[0];
+        let content = r[1];
+        let html = text.replaceAll(layout, options.titleHolder, content.title);
+        html = text.replaceAll(html, options.bodyHolder, content.body);
+
+        if (options.cache) {
+            cachePages[filepath] = html;
+        }
+        return html;
+    }
+
+    async function getLayout() {
+        if (options.cache && cacheLayout) return cacheLayout;
+        let layout = (await fs.exists(options.layout)) ? await fs.readFile(options.layout, "utf8") : defaultLayout;
+        if (options.cache) cacheLayout = layout;
+        return layout;
+    }
+
+    async function getContent(filepath) {
+        let content = await fs.readFile(filepath, "utf8");
+        let title = content
+            .slice(0, content.indexOf("\n"))
+            .trim()
+            .replace(/^[#\s]+/, "");
+        let body = options.render(content);
+        return {
+            title: title,
+            body: body,
+        };
+    }
 };

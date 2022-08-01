@@ -1,11 +1,7 @@
 "use strict";
 
 const path = require('path');
-const { _, fs, eachAsync_, urlJoin, getValueByPath } = require('rk-utils');
-const Router = require('@koa/router');
-const HttpCode = require('http-status-codes');
-const { Helpers: { tryRequire } } = require('@genx/app');
-const { InvalidConfiguration, BadRequest, NotFound } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
 const Koa = require('koa');
 const mount = require('koa-mount');
 
@@ -33,7 +29,7 @@ const mount = require('koa-mount');
  *  }
  */
 module.exports = async (app, baseRoute, options) => {
-    const graphqlHTTP = tryRequire('koa-graphql');        
+    const graphqlHTTP = app.tryRequire('koa-graphql');        
 
     const { middlewares, schemaProvider, ...graphqlOpts } = options;
 

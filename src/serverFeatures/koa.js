@@ -1,11 +1,9 @@
 "use strict";
 
-const Feature = require('@genx/app/lib/enum/Feature');
-const Util = require('rk-utils');
-const _ = Util._;
-const Promise = Util.Promise;
+const { _ } = require('@genx/july');
 const validator = require('validator');
-const { InvalidConfiguration } = require('../utils/Errors');
+const { InvalidConfiguration } = require('@genx/error');
+const Feature = require('@genx/app/lib/enum/Feature');
 
 /**
  * Koa middleware function

@@ -96,7 +96,7 @@ const ModuleBase = Base => class extends Base {
 
     _getFeatureFallbackPath() {
         let pathArray = super._getFeatureFallbackPath();
-        pathArray.splice(1, 0, path.resolve(__dirname, Literal.FEATURES_PATH));
+        pathArray.splice(1, 0, path.resolve(this.backendPath, Literal.FEATURES_PATH));
         return pathArray;
     }
 }

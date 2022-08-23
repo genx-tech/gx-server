@@ -245,4 +245,18 @@ describe('app-bvt', function () {
                 .expect({});            
         });
     });
+
+    describe('app feature test', function () {
+        it('should return feature param', function (done) {
+            request(webServer.httpServer)
+                .get('/test/api/feature')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .expect(function (res) {
+                    res.body.should.be.eql({ param: 'test' })
+                })
+                .end(done);
+        });
+    });
 });

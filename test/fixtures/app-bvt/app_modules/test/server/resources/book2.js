@@ -1,7 +1,4 @@
-
-"use strict";
-
-const Util = require('rk-utils');
+const { _ } = require('@genx/july');
 
 class BookController {
     books = [ { id: 1, title: 'Book 1' }, { id: 2, title: 'Book 2' } ];
@@ -19,12 +16,12 @@ class BookController {
     
     detail(ctx) {
         let id = ctx.params.id;
-        ctx.body =  Util._.find(this.books, book => book.id == id) || {};
+        ctx.body =  _.find(this.books, book => book.id == id) || {};
     }
     
     update(ctx) {
         let id = ctx.params.id;
-        let bookFound = Util._.find(this.books, book => book.id == id);
+        let bookFound = _.find(this.books, book => book.id == id);
     
         bookFound.title = ctx.request.body.title;
         ctx.body =  bookFound;
@@ -32,7 +29,7 @@ class BookController {
     
     remove(ctx) {
         let id = ctx.params.id;
-        let idx = Util._.findIndex(this.books, book => book.id == id);
+        let idx = _.findIndex(this.books, book => book.id == id);
         ctx.body = this.books.splice(idx, 1)[0];
     }
 }

@@ -4,6 +4,9 @@
         "koa-body": {},
         "koa-override": {}
     },
+    "appFeature": {
+        "param": "test"
+    },
     "routing": {
         "/": {
             "rule": {

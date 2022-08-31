@@ -7,7 +7,7 @@
 const path = require('path');
 const request = require('supertest');
 const sh = require('shelljs');
-const WebServer = require('../lib/WebServer');
+const WebServer = require('../src/WebServer');
 
 const WORKING_DIR = path.resolve(__dirname, 'fixtures/server-only');
 

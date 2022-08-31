@@ -1,6 +1,6 @@
 {
     "name": "@genx/server",
-    "version": "2.1.1",
+    "version": "2.2.0",
     "description": "Gen-X web application framework based on koa for node.js",
     "main": "lib/index.js",
     "publishConfig": {
@@ -43,13 +43,6 @@
             "src"
         ]
     },
-    "mocha": {
-        "require": [
-            "@babel/register",
-            "should"
-        ],
-        "timeout": 30000
-    },
     "devDependencies": {
         "@babel/cli": "^7.14.8",
         "@babel/core": "^7.15.0",
@@ -77,7 +70,7 @@
         "winston-mongodb": "^5.0.7"
     },
     "dependencies": {
-        "@genx/app": "^2.0.4",
+        "@genx/app": "^2.1.0",
         "@genx/error": "^1.1.2",
         "@genx/july": "^1.1.1",
         "@genx/sys": "^0.1.6",
@@ -97,6 +90,5 @@
         "koa-static": "^5.0.0",
         "koa-views": "^6.2.1",
         "validator": "^13.7.0"
-    },
-    "gitHead": "fa2e20a52c6b32955038685358fe5e45a4119734"
+    }
 }

@@ -34,9 +34,9 @@ class WebModule extends ModuleBase(Routable(ServiceContainer)) {
     /**
      * Require a module from the source path of an app module
      * @param {*} relativePath 
-     */ß
+     */
     requireFromApp(appName, relativePath) {
-        return this.server.requireFromApp(appßName, relativePath);
+        return this.server.requireFromApp(appName, relativePath);
     }
 
     _getFeatureFallbackPath() {

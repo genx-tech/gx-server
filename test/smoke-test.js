@@ -3,7 +3,7 @@
 require('./babel-for-test');
 
 const path = require('path');
-const WebServer = require('../lib/WebServer');
+const WebServer = require('../src/WebServer');
 
 const WORKING_DIR = path.resolve(__dirname, 'temp');
 

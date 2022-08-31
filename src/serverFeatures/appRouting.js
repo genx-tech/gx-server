@@ -25,7 +25,7 @@ const { _, eachAsync_ } = require('@genx/july');
 const { fs } = require('@genx/sys');
 const { InvalidConfiguration } = require('@genx/error');
 const WebModule = require('../WebModule');
-const Feature = require('@genx/app/lib/enum/Feature');
+const { Feature } = require('@genx/app');
 
 module.exports = {
 

@@ -47,58 +47,71 @@ module.exports = (app, baseRoute, options) => {
         app.useMiddlewares(router, options.middlewares);
     }
 
-    let resourcesPath = path.join(resourcePath, "*.js");
-    let files = glob.sync(resourcesPath, { nodir: true });
+    let resourcesPath = path.join(resourcePath, "**/*.js");
+    let files = glob.sync(resourcesPath);
 
-    _.each(files, (file) => {
-        let entityName = path.basename(file, ".js");
-        let controller = require(file);
+    _.each(files, (filepath) => {
+        let controller = require(filepath);
 
         if (typeof controller === "function") {
             controller = new controller(app);
-        }
 
-        let baseEndpoint;
+            const propertyPath = _.replace(filepath, `${resourcePath}/`, '');
+            const properties = propertyPath.split('/');
+            properties[properties.length - 1] = properties[properties.length - 1].split('.')[0];
 
-        if (options.remaps && entityName in options.remaps) {
-            baseEndpoint = text.ensureStartsWith(text.dropIfEndsWith(options.remaps[entityName], "/"), "/");
-        } else {
-            baseEndpoint = text.ensureStartsWith(naming.kebabCase(entityName), "/");
-        }
+            const routerProperties = Array.from(properties);
+            routerProperties[routerProperties.length - 1] = naming.kebabCase(routerProperties[routerProperties.length - 1].split('.')[0]);
 
-        let idName = naming.camelCase(entityName) + "Id";
-        let endpointWithId = appendId(baseEndpoint, idName);
+            if (routerProperties.length >= 2) {
+                routerProperties.splice(1, 0, `:${properties[0]}Id`);
+            }
 
-        if (hasMethod(controller, "find")) {
-            const _action = controller.find.bind(controller);
-            const _middlewares = controller.find.__metaMiddlewares;
-            app.addRoute(router, "get", baseEndpoint, _middlewares ? [..._middlewares, _action] : _action);
-        }
+            let filename = properties[properties.length - 1];
+            const fileProperty = properties.join('.');
 
-        if (hasMethod(controller, "post")) {
-            const _action = controller.post.bind(controller);
-            const _middlewares = controller.post.__metaMiddlewares;
-            app.addRoute(router, "post", baseEndpoint, _middlewares ? [..._middlewares, _action] : _action);
-        }
+            let baseEndpoint;
+            if (options.remaps && fileProperty in options.remaps) {
+                baseEndpoint = text.ensureStartsWith(text.dropIfEndsWith(options.remaps[fileProperty], "/"), "/");
+            } else {
+                baseEndpoint = text.ensureStartsWith(routerProperties.join('/'), "/");
+            }
 
-        if (hasMethod(controller, "findById")) {
-            const _action = (ctx) => controller.findById(ctx, ctx.params[idName]);
-            const _middlewares = controller.findById.__metaMiddlewares;
-            app.addRoute(router, "get", endpointWithId, _middlewares ? [..._middlewares, _action] : _action);
-        }
 
-        if (hasMethod(controller, "updateById")) {
-            const _action = (ctx) => controller.updateById(ctx, ctx.params[idName]);
-            const _middlewares = controller.updateById.__metaMiddlewares;
-            app.addRoute(router, "put", endpointWithId, _middlewares ? [..._middlewares, _action] : _action);
-        }
+            let idName = naming.camelCase(filename) + "Id";
+            let endpointWithId = appendId(baseEndpoint, idName);
 
-        if (hasMethod(controller, "deleteById")) {
-            const _action = (ctx) => controller.deleteById(ctx, ctx.params[idName]);
-            const _middlewares = controller.deleteById.__metaMiddlewares;
-            app.addRoute(router, "del", endpointWithId, _middlewares ? [..._middlewares, _action] : _action);
+
+            if (hasMethod(controller, "find")) {
+                const _action = controller.find.bind(controller);
+                const _middlewares = controller.find.__metaMiddlewares;
+                app.addRoute(router, "get", baseEndpoint, _middlewares ? [..._middlewares, _action] : _action);
+            }
+
+            if (hasMethod(controller, "post")) {
+                const _action = controller.post.bind(controller);
+                const _middlewares = controller.post.__metaMiddlewares;
+                app.addRoute(router, "post", baseEndpoint, _middlewares ? [..._middlewares, _action] : _action);
+            }
+
+            if (hasMethod(controller, "findById")) {
+                const _action = (ctx) => controller.findById(ctx, ctx.params[idName]);
+                const _middlewares = controller.findById.__metaMiddlewares;
+                app.addRoute(router, "get", endpointWithId, _middlewares ? [..._middlewares, _action] : _action);
+            }
+
+            if (hasMethod(controller, "updateById")) {
+                const _action = (ctx) => controller.updateById(ctx, ctx.params[idName]);
+                const _middlewares = controller.updateById.__metaMiddlewares;
+                app.addRoute(router, "put", endpointWithId, _middlewares ? [..._middlewares, _action] : _action);
+            }
+
+            if (hasMethod(controller, "deleteById")) {
+                const _action = (ctx) => controller.deleteById(ctx, ctx.params[idName]);
+                const _middlewares = controller.deleteById.__metaMiddlewares;
+                app.addRoute(router, "del", endpointWithId, _middlewares ? [..._middlewares, _action] : _action);
+            }
         }
     });
-
     app.addRouter(router);
 };

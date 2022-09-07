@@ -56,31 +56,21 @@ module.exports = (app, baseRoute, options) => {
         if (typeof controller === "function") {
             controller = new controller(app);
 
-            const propertyPath = _.replace(filepath, `${resourcePath}/`, '');
-            const properties = propertyPath.split('/');
-            properties[properties.length - 1] = properties[properties.length - 1].split('.')[0];
-
-            const routerProperties = Array.from(properties);
-            routerProperties[routerProperties.length - 1] = naming.kebabCase(routerProperties[routerProperties.length - 1].split('.')[0]);
-
-            if (routerProperties.length >= 2) {
-                routerProperties.splice(1, 0, `:${properties[0]}Id`);
-            }
-
-            let filename = properties[properties.length - 1];
-            const fileProperty = properties.join('.');
+            const relativePath = path.relative(resourcePath, filepath);
+            const dirPath = path.dirname(relativePath);
+            const entityName = path.basename(relativePath, '.js');
+            const entithNameWithPath = path.join(dirPath, entityName);
 
             let baseEndpoint;
-            if (options.remaps && fileProperty in options.remaps) {
-                baseEndpoint = text.ensureStartsWith(text.dropIfEndsWith(options.remaps[fileProperty], "/"), "/");
+            if (options.remaps && entithNameWithPath in options.remaps) {
+                baseEndpoint = text.ensureStartsWith(text.dropIfEndsWith(options.remaps[entithNameWithPath], "/"), "/");
             } else {
-                baseEndpoint = text.ensureStartsWith(routerProperties.join('/'), "/");
+                const urlPath = entithNameWithPath.split('/').map(p => naming.kebabCase(p)).join('/');
+                baseEndpoint = text.ensureStartsWith(urlPath, "/");
             }
 
-
-            let idName = naming.camelCase(filename) + "Id";
+            let idName = naming.camelCase(entityName) + "Id";
             let endpointWithId = appendId(baseEndpoint, idName);
-
 
             if (hasMethod(controller, "find")) {
                 const _action = controller.find.bind(controller);

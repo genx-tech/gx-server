@@ -34,7 +34,7 @@ const book1JS = `
 const book2JS = `
  class Controller {
      async find(ctx) {
-         ctx.body = 'book2' + '-id:'+ ctx.params.meId;
+         ctx.body = 'book2';
      };
  }
  module.exports = Controller;
@@ -43,7 +43,7 @@ const book2JS = `
 const book3JS = `
  class Controller {
      async post(ctx) {
-         ctx.body = 'book3' + '-id:'+ ctx.params.meId;
+         ctx.body = 'book3';
      };
  }
  module.exports = Controller;
@@ -52,11 +52,11 @@ const book3JS = `
 const book4JS = `
  class Controller {
      async findById(ctx,bookId) {
-         ctx.body = 'book4'+ '-id:'+ ctx.params.book4Id;
+         ctx.body = 'book4-id:' + bookId;
      };
 
      async updateById(ctx,bookId) {
-        ctx.body = 'book4'+ '-id:'+ ctx.params.book4Id;
+        ctx.body = 'book4-id:' + bookId;
     };
  }
  module.exports = Controller;
@@ -65,7 +65,7 @@ const book4JS = `
  const book5JS = `
  class Controller {
      async find(ctx) {
-        ctx.body = 'book5'+ '-id:'+ ctx.params.book5Id;
+        ctx.body = 'book5';
      };
  }
  module.exports = Controller;
@@ -74,11 +74,11 @@ const book4JS = `
  const book6JS = `
  class Controller {
      async find(ctx) {
-        ctx.body = 'book6'+ '-id:'+ ctx.params.userId;
+        ctx.body = 'book6';
      };
 
      async updateById(ctx,book6Id) {
-        ctx.body = 'book6'+ '-id:'+ ctx.params.userId + '-book:' + book6Id;
+        ctx.body = 'book6-id:' + book6Id;
      };
  }
  module.exports = Controller;
@@ -124,8 +124,8 @@ describe('unit:router:load-router', async function () {
                     "/api": {
                         "gaml": {
                             "remaps": {
-                                "me.info.detail.book4": "/book4",
-                                "me.info.book6":"/user/:userId/book6"
+                                "me/info/detail/book4": "/book4",
+                                "me/info/book6":"/user/:userId/book6"
                             }
                         }
                     }
@@ -149,9 +149,9 @@ describe('unit:router:load-router', async function () {
                 }).catch(err => done(err))
         });
 
-        it('GET:/api/me/1/book-2', function (done) {
+        it('GET:/api/me/book-2', function (done) {
             request(webServer.httpServer)
-                .get('/api/me/1/book-2')
+                .get('/api/me/book-2')
                 .set('Accept', 'application/json')
                 .expect(200)
                 .then(res => {
@@ -161,13 +161,13 @@ describe('unit:router:load-router', async function () {
 
         });
 
-        it('POST:/api/me/:meId/info/book-3', function (done) {
+        it('POST:/api/me/info/book-3', function (done) {
             request(webServer.httpServer)
-                .post('/api/me/1/info/book-3')
+                .post('/api/me/info/book-3')
                 .set('Accept', 'application/json')
                 .expect(200)
                 .then(res => {
-                    assert(res.text, 'book3-id:1');
+                    assert(res.text, 'book3');
                     done();
                 }).catch(err => done(err))
         });
@@ -207,7 +207,7 @@ describe('unit:router:load-router', async function () {
 
         it('GET:/api/me/:meId/info/detail/book-5', function (done) {
             request(webServer.httpServer)
-                .get('/api/me/1/info/detail/book-5')
+                .get('/api/me/info/detail/book-5')
                 .set('Accept', 'application/json')
                 .expect(200)
                 .then(res => {

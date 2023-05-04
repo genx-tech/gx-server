@@ -1,4 +1,4 @@
-const {  } = require('@genx/error');
+const { ApplicationError } = require('@genx/error');
 
 class Controller {
     constructor(app) {

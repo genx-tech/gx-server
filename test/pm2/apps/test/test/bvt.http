@@ -1,0 +1,13 @@
+@base = http://localhost:4001
+
+### get list
+GET {{base}}/api/hello
+content-type: application/json
+
+### get detail
+GET {{base}}/api/hello/test
+content-type: application/json
+
+### get list
+GET {{base}}/api/hello?date=2023-04-01
+content-type: application/json

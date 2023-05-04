@@ -5,12 +5,11 @@
  * @module Middleware_Session
  */
 
-const session = require('koa-session');
 const { InvalidConfiguration } = require('@genx/error');
 
 const DEFAULT_OPTS = {
-    key: 'k-server.sid',
-    prefix: 'k-server:sess:'
+    key: 'gx-server.sid',
+    prefix: 'gx-server:sess:'
 };
 
 /**
@@ -32,6 +31,7 @@ const DEFAULT_OPTS = {
  * @param {Routable} app 
  */
 module.exports = (options, app) => {
+    const session = app.tryRequire('koa-session');
 
     let store = options.store || { type: 'memory' };
 
@@ -74,7 +74,7 @@ module.exports = (options, app) => {
             storeObject = new MemoryStore();
             break;
         default:
-            throw new Mowa.Error.InvalidConfiguration(
+            throw new InvalidConfiguration(
                 'Unsupported session store type: ' + store.type,
                 app,
                 'middlewares.session.store.type'

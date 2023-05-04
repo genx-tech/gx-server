@@ -1,0 +1,26 @@
+{
+    "koa": {
+        "keys": ["cookie", "secret", "to be replaced"],
+        "httpPort": 4001
+    },
+    "middlewares": [
+        "ip",
+        [
+            "@koa/cors",
+            {
+                "origin": "*"
+            }
+        ],
+        "koa-compress",
+        "koa-etag",
+        "koa-body",
+        "koa-override"
+    ],
+    "apiWrapper": {},
+    "appRouting": {
+        "/api": {
+            "name": "test",
+            "options": {}
+        }
+    }
+}

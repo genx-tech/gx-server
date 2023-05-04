@@ -1,0 +1,8 @@
+{
+    "apps": [
+        {
+            "name": "gx-server-test",
+            "script": "./index.js"
+        }
+    ]
+}

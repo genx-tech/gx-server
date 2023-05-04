@@ -63,8 +63,6 @@ class WebServer extends Routable(Runnable(ServiceContainer)) {
          */
         this.appModulesPath = this.toAbsolutePath(this.options.appModulesPath);
 
-        console.log('this.appModulesPath', this.appModulesPath);
-
         /**
          * Base route.
          * @member {string}

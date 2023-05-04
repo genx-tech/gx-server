@@ -46,25 +46,23 @@ describe('unit:features:socketServer', function () {
         fs.removeSync(WORKING_DIR);
     });
 
-    describe('handshake', function () {
-        it('welcome message', function (done) {              
-            const { Manager } = require('socket.io-client');
-            const mgr = new Manager('http://'+ webServer.host, { path: '/ws-api' });
-            let heartbeatWs = mgr.socket('/heartbeat')
+    it('welcome message', function (done) {              
+        const { Manager } = require('socket.io-client');
+        const mgr = new Manager('http://'+ webServer.host, { path: '/ws-api' });
+        let heartbeatWs = mgr.socket('/heartbeat')
 
-            heartbeatWs.on('welcome', data => {
-                data.should.be.equal(WelcomeMessage);
+        heartbeatWs.on('welcome', data => {
+            data.should.be.equal(WelcomeMessage);
 
-                heartbeatWs.emit('echo', 'hello', (echo) => {                    
-                    echo.should.be.equal('hello');
-                    heartbeatWs.close();
-                    done();
-                });                    
-            });
+            heartbeatWs.emit('echo', 'hello', (echo) => {                    
+                echo.should.be.equal('hello');
+                heartbeatWs.close();
+                done();
+            });                    
+        });
 
-            heartbeatWs.on('connect_error', (error) => {
-                console.error(error);
-            });
+        heartbeatWs.on('connect_error', (error) => {
+            console.error(error);
         });
     });
 });

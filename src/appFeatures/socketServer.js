@@ -9,7 +9,10 @@
 
 const path = require('path');
 const { _, url: urlUtil, text } = require('@genx/july');
-const { Feature } = require('..').Enums;
+const {
+    Feature,
+    Helpers: { ensureFeatureName },
+} = require("@genx/app");
 const { InvalidConfiguration } = require('@genx/error');
 
 const DEFAULT_CONTROLLER_PATH = 'events';
@@ -32,8 +35,8 @@ function loadEventHandler(appModule, namespace, controllerBasePath, handlerName,
         }
     }
 
-    let controller = handlerName.substr(0, pos);
-    let action = handlerName.substr(pos + 1);
+    let controller = handlerName.substring(0, pos);
+    let action = handlerName.substring(pos + 1);
 
     let controllerPath = path.resolve(controllerBasePath, controller + '.js');
     let ctrl = require(controllerPath);
@@ -58,8 +61,8 @@ function loadEventHandler(appModule, namespace, controllerBasePath, handlerName,
     return middlewareHandler;
 }
 
-function startSocketServer(appModule, config) {
-    const SocketServer = appModule.tryRequire('socket.io');
+function startSocketServer(appModule, serviceName, config) {
+    const ioServer = appModule.tryRequire('socket.io');
 
     let { port, logger, path: wsPath, ...options } = config;
 
@@ -71,29 +74,23 @@ function startSocketServer(appModule, config) {
         logger && logger.log(...args);
     }
 
+    function logError(error) {
+        logger && logger.log('error', error.message || error);
+    }
+
     let io, standalone = false;
 
     let endpointPath = wsPath ? urlUtil.join(appModule.route, wsPath) : appModule.route;
     endpointPath = text.ensureStartsWith(endpointPath, '/');
 
-    let serviceTag = port ? `socketServer:${port}${endpointPath}` : `socketServer:${endpointPath}`;
-
-    if (appModule.hasService(serviceTag)) {
-        throw new InvalidConfiguration(
-            'Socket server path or port conflict.',
-            appModule,
-            `socketServer[${i}].(path|port)`
-        );
-    }            
-
     options.path = endpointPath;
 
     if (port) {
-        io = new SocketServer(options);
+        io = ioServer(options);
         standalone = true;
         appModule.log('verbose', `A standalone socket server is listening at [port=${port}, path=${endpointPath}].`);        
     } else {
-        io = new SocketServer(appModule.server.httpServer, options);
+        io = ioServer(appModule.server.httpServer, options);
         port = appModule.server.port;
         appModule.log('verbose', `A socket server is listening at [path=${endpointPath}].`);        
     }
@@ -104,6 +101,14 @@ function startSocketServer(appModule, config) {
             port,
             id: socket.id,
             ...socket.handshake
+        });
+
+        socket.on('disconnect', () => {
+            log('info', 'client disconnect', { 
+                endpoint: endpointPath,
+                port,
+                id: socket.id
+            });
         });
     });
 
@@ -135,64 +140,68 @@ function startSocketServer(appModule, config) {
 
         let eventHandlers;
 
-        if (info.controller) {                
-            let rpcControllerPath = path.resolve(controllersPath, info.controller + '.js');
-            eventHandlers = require(rpcControllerPath);
-
-            appModule.log('verbose', `[${serviceTag}]Controller "${info.controller}" is attached for namespace "${name}".`);
-        } 
-        
-        if (info.events) {
-            eventHandlers = {};
-
-            _.forOwn(info.events, (handler, event) => {
-                eventHandlers[event] = loadEventHandler(appModule, name, controllersPath, handler);                    
-            });
-
-            appModule.log('verbose', `[${serviceTag}]Event handlers are attached for namespace "${name}".`, {
-                events: Object.keys(eventHandlers)
-            });
+        if (!info.controller) {               
+            throw new InvalidConfiguration(
+                'Missing controller.',
+                appModule,
+                `socketServer.routes[${name}]`
+            );
+        }
+            
+        let rpcControllerPath = path.resolve(controllersPath, info.controller + '.js');
+        let isObj = false;
+        const controllerObj = require(rpcControllerPath);
+        if (typeof controllerObj === 'function') {
+            eventHandlers = new controllerObj(appModule);
+            isObj = true;
+        } else {
+            eventHandlers = controllerObj;
         }
 
+        appModule.log('verbose', `[${serviceName}] controller "${info.controller}" is attached for namespace "${name}".`);    
+
+        const _eventHandlers = {};
+        
+        info.events && _.each(info.events, (methodName, eventName) => {
+            if (typeof eventHandlers[methodName] === 'function') {
+                _eventHandlers[eventName] = eventHandlers[methodName];
+            }
+        });
+
+        function invoke(ctx, data, fn, cb) {
+            console.log('invoke ..........');
+
+            if (isObj) {
+                fn = fn.bind(eventHandlers);
+            }
+        
+            fn(ctx, data).then(result => result != null && cb && cb(result)).catch(logError);
+        }
+        
         namespaceChannel.on('connect', function (socket) {
-            let ctx = { appModule, socket };
+            let ctx = { appModule, socket };  
 
-            socket.on('disconnect', () => {
-                log('verbose', 'namespace disconnect', { 
-                    endpoint: endpointPath,
-                    port,
-                    id: socket.id, 
-                    namespace: name 
-                });
+            //Register event handlers
+            _.forOwn(_eventHandlers, (handler, event) => {
+                socket.on(event, (data, cb) => invoke(ctx, data, handler, cb));
+            });                
 
-                if (info.onDisconnect) {
-                    loadEventHandler(appModule, name, controllersPath, info.onDisconnect)(ctx).catch(error => log('error', error.message));            
-                }     
-            });
-
+            if (eventHandlers.onConnect) {                
+                invoke(ctx, null, eventHandlers.onConnect);
+            }      
+            
             log('verbose', 'namespace connect', { 
                 endpoint: endpointPath,
                 port,
                 id: socket.id, 
                 namespace: name 
-            });           
-
-            //Register event handlers
-            eventHandlers && _.forOwn(eventHandlers, (handler, event) => {
-                socket.on(event, (data, cb) => handler(ctx, data).then(cb));
-            });                
-
-            if (info.onConnect) {
-                loadEventHandler(appModule, name, controllersPath, info.onConnect)(ctx).catch(error => log('error', error.message));            
-            }            
+            });       
         });
     });
 
     if (standalone) {
         io.listen(config.port);
     }
-
-    appModule.registerService(serviceTag, io);
 
     return io;
 }
@@ -204,6 +213,8 @@ module.exports = {
      * @member {string}
      */
     type: Feature.PLUGIN,
+
+    groupable: true,
 
     /**
      * The socket server options.
@@ -218,18 +229,15 @@ module.exports = {
 
     /**
      * Load the rpc Server
-     * @param {AppModule} appModule - The app module object
-     * @param {ServerOptions[]} servers - Rpc server config
+     * @param {AppModule} app - The app module object
+     * @param {ServerOptions} options - Rpc server config
      */
-    load_: (appModule, servers) => {        
+    load_: (app, options, name) => {   
+        ensureFeatureName(name);
 
-        if (Array.isArray(servers)) {
-            return servers.forEach(server => startSocketServer(appModule, server));            
-        }
-
-        let io = startSocketServer(appModule, servers);
+        let io = startSocketServer(app, name, options);
 
         //default socket server
-        appModule.registerService('socketServer', io);
+        app.registerService(name, io);
     }
 };

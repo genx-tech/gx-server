@@ -27,7 +27,7 @@ module.exports = (opt, app) => {
         await next();        
 
         let info = {
-            ip: ctx.header['x-real-ip'] || ctx.ip,
+            ip: ctx.ip, // should use ip middleware to extract the real ip behind lb
             method: ctx.method,
             url: ctx.url,
             originalUrl: ctx.originalUrl,           
